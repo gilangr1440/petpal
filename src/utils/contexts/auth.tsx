@@ -26,8 +26,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState(cookies.token ?? "");
   const [user, setUser] = useState<Partial<UserType>>({});
   const [admin, setAdmin] = useState<Partial<AdminType>>({});
-  console.log(user);
-  console.log(admin);
+  // console.log(user);
+  // console.log(admin);
 
   useEffect(() => {
     setAxiosConfig(token);
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUser = async () => {
     try {
       const result = await getUser();
-      setUser(result?.data);
+      setUser(result?.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchAdmin = async () => {
     try {
       const result = await getAdmin();
-      setAdmin(result?.data);
+      setAdmin(result?.data.data);
     } catch (error) {
       console.log(error);
     }

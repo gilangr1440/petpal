@@ -49,11 +49,19 @@ const Navbar = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>Hi, {user.full_name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Home</DropdownMenuItem>
-              <DropdownMenuItem>Clinic</DropdownMenuItem>
-              <DropdownMenuItem>History</DropdownMenuItem>
+              <NavLink to={"clinic-lists"}>
+                <DropdownMenuItem>Clinic</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/chat"}>
+                <DropdownMenuItem>Chat</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/history"}>
+                <DropdownMenuItem>History</DropdownMenuItem>
+              </NavLink>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+              <NavLink to={"/edit-profile"}>
+                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+              </NavLink>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-500" onClick={handleLogout}>
                 Logout
@@ -71,11 +79,22 @@ const Navbar = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>Hi, {admin.fullName}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Home</DropdownMenuItem>
-              <DropdownMenuItem>Clinic</DropdownMenuItem>
-              <DropdownMenuItem>History</DropdownMenuItem>
+              <NavLink to={"/admin"}>
+                <DropdownMenuItem>Admin</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/chat"}>
+                <DropdownMenuItem>Chat</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/admin/service-requests"}>
+                <DropdownMenuItem>Service Request</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/admin/sales"}>
+                <DropdownMenuItem>Sales</DropdownMenuItem>
+              </NavLink>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+              <NavLink to={"/admin/edit-profile"}>
+                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+              </NavLink>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-500" onClick={handleLogout}>
                 Logout
