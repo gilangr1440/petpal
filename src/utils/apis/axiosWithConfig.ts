@@ -1,15 +1,18 @@
 import axios from "axios";
 
-const axiosWithConfig = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
-});
+let USER_JWT_TOKEN = "";
 
-axiosWithConfig.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwtToken") as string | null;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+const axiosWithConfig = axios.create();
+
+export const setAxiosConfig = (token: string) => {
+  USER_JWT_TOKEN = token;
+};
+
+axiosWithConfig.interceptors.request.use((axiosConfig) => {
+  axiosConfig.baseURL = import.meta.env.VITE_BASE_URL;
+  axiosConfig.headers.Authorization = `Bearer ${USER_JWT_TOKEN}`;
+
+  return axiosConfig;
 });
 
 export default axiosWithConfig;

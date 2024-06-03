@@ -17,3 +17,13 @@ export const editUserSchema = z.object({
     .optional()
     .or(z.literal("")),
 });
+
+export type UserType = {
+  id?: number;
+  full_name?: string;
+  email?: string;
+  profile_picture?: string;
+  coordinate?: string;
+  address?: string;
+  phone?: string;
+};
