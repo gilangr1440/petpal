@@ -1,76 +1,81 @@
 import Layout from "@/components/layout";
+import ProductList from "@/components/product-list";
+import SortProducts from "@/components/sort-product";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import axios from "axios";
+  Button,
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { IProductListData, getProducts } from "@/utils/apis/products";
+import { sortProductsAtom } from "@/utils/jotai/atom";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-interface IProductListData {
-  id: number;
-  product_picture: string;
-  product_name: string;
-  price: number;
-}
 
 const AllProducts = () => {
   const [data, setData] = useState<IProductListData[]>([]);
-  const fetchData = async () => {
-    const response = await axios.get("https://zyannstore.my.id/products");
-    setData(response.data.data);
-  };
+  const [sort] = useAtom(sortProductsAtom);
+  const [page, setPage] = useState<number>(1);
+
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const products = await getProducts(
+          `${page && `page=${page}`}${sort && `&sort=${sort}`}`
+        );
+        setData(products.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
     fetchData();
-  }, []);
+  }, [sort, page]);
+
+  const nextPage = () => {
+    setPage((prevState) => prevState + 1);
+    console.log(page + 1);
+  };
+
+  const prevPage = () => {
+    if (page === 1) return;
+    setPage((prevState) => prevState - 1);
+    console.log(page - 1);
+  };
 
   return (
     <Layout>
       <div className="container mx-auto h-full py-8 flex items-end justify-center flex-col gap-y-8">
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort By" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Default</SelectItem>
-            <SelectItem value="dark">Range</SelectItem>
-            <SelectItem value="system">Price</SelectItem>
-          </SelectContent>
-        </Select>
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {data.map((items) => {
-            return (
-              <Link to={"/"} key={items.id}>
-                <Card>
-                  <CardHeader>
-                    <img
-                      src={items.product_picture}
-                      alt=""
-                      className="rounded-sm h-[300px] object-cover"
-                    />
-                  </CardHeader>
-                  <CardContent>
-                    <h1 className="text-base font-semibold">
-                      {items.product_name}
-                    </h1>
-                  </CardContent>
-                  <CardFooter>
-                    <h3>Rp. {items.price}</h3>
-                  </CardFooter>
-                </Card>
-              </Link>
-            );
-          })}
-        </section>
+        <SortProducts />
+        {data && data.length > 0 ? (
+          <ProductList data={data} />
+        ) : (
+          <div className="w-full flex flex-col items-center justify-center">
+            <img src="/public/assets/data-not-dound.png" alt="" />
+            <Button onClick={prevPage}>Back</Button>
+          </div>
+        )}
+        {data && data.length >= 10 ? (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious onClick={prevPage} />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext onClick={nextPage} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        ) : null}
       </div>
     </Layout>
   );

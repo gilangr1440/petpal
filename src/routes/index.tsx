@@ -7,7 +7,6 @@ import Register from "@/pages/auth/register";
 import DetailProductByAdmin from "@/pages/admin/module/detail-product";
 import EditProfile from "@/pages/edit-profile";
 import AllProducts from "@/pages/products";
-import DetailProducts from "@/pages/detail-products/detail-product";
 import Admin from "@/pages/admin";
 import AddEditProducts from "@/pages/admin/module/add-edit-product";
 import DetailDoctor from "@/pages/detail-doctor";
@@ -17,6 +16,8 @@ import ServiceRequests from "@/pages/admin/module/service-requests";
 import Sales from "@/pages/admin/module/sales";
 import History from "@/pages/history";
 import EditProfileAdmin from "@/pages/admin/module/edit-profile";
+import DetailProduct from "@/pages/products/detail-product";
+import Payment from "@/pages/transaction";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -41,7 +42,7 @@ const App = () => {
         },
         {
           path: "/products/:id",
-          element: <DetailProducts />,
+          element: <DetailProduct />,
         },
         {
           path: "/edit-profile",
@@ -64,15 +65,15 @@ const App = () => {
           element: <DetailDoctor />,
         },
         {
-          path: "/admin/products/:id",
+          path: "/admin/products/:product_id",
           element: <DetailProductByAdmin />,
         },
         {
-          path: "/admin/products/:id",
+          path: "/admin/products/:product_id",
           element: <DetailProductByAdmin />,
         },
         {
-          path: "/admin/products/add-edit/:id",
+          path: "/admin/products/add-edit/:product_id",
           element: <AddEditProducts />,
         },
         {
@@ -90,6 +91,10 @@ const App = () => {
         {
           path: "/history",
           element: <History />,
+        },
+        {
+          path: "/payment",
+          element: <Payment />,
         },
       ],
     },

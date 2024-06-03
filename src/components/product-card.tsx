@@ -8,7 +8,7 @@ interface IProductCart {
 
 const ProductCard = ({ data }: IProductCart) => {
   return (
-    <Link to={"/"} key={data.id}>
+    <Link to={`/products/${data.id}`} key={data.id}>
       <Card>
         <CardHeader>
           <img

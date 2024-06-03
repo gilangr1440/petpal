@@ -8,7 +8,7 @@ import {
 import { sortProductsAtom } from "@/utils/jotai/atom";
 import { useAtom } from "jotai";
 
-const Sort = () => {
+const SortProducts = () => {
   const [, setSort] = useAtom(sortProductsAtom);
 
   const handleSortChange = (value: string) => {
@@ -29,4 +29,4 @@ const Sort = () => {
   );
 };
 
-export default Sort;
+export default SortProducts;

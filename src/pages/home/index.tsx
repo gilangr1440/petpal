@@ -1,15 +1,15 @@
 //? Components
 import Layout from "@/components/layout";
 import Hero from "./Hero";
-import CategoryTabs from "./CategoryTabs";
-import Sort from "./Sort";
-import ProductList from "./ProductList";
+import CategoryTabs from "./category-tabs";
 
 //? Utils
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { sortProductsAtom } from "@/utils/jotai/atom";
 import { IProductListData, getProducts } from "@/utils/apis/products";
+import ProductList from "@/components/product-list";
+import SortProducts from "@/components/sort-product";
 
 const Home = () => {
   const [data, setData] = useState<IProductListData[]>([]);
@@ -37,7 +37,7 @@ const Home = () => {
       <section className="container mx-auto h-full flex items-start justify-center flex-col gap-y-8 py-6">
         <header className="w-full flex flex-col items-start sm:items-end justify-between gap-y-4 sm:flex-row">
           <CategoryTabs />
-          <Sort />
+          <SortProducts />
         </header>
         <ProductList data={data} />
       </section>

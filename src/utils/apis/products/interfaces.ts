@@ -17,3 +17,11 @@ export interface IProductListData {
   product_name: string;
   price: number;
 }
+
+export interface IProductDetail {
+  product_picture: string;
+  product_name: string;
+  price: number;
+  description: string;
+  stock: number;
+}
