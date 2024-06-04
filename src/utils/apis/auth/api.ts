@@ -29,7 +29,10 @@ interface loginAdminPayload {
 
 export const userRegister = async (body: RegisterType) => {
   try {
-    const response = await axios.post("http://zyannstore.my.id/users/register", body);
+    const response = await axios.post(
+      "https://zyannstore.my.id/users/register",
+      body
+    );
     return response.data as registerPayload;
   } catch (error: any) {
     return error.response.data;
@@ -38,7 +41,10 @@ export const userRegister = async (body: RegisterType) => {
 
 export const userLogin = async (body: LoginType) => {
   try {
-    const response = await axios.post("http://zyannstore.my.id/users/login", body);
+    const response = await axios.post(
+      "https://zyannstore.my.id/users/login",
+      body
+    );
     return response.data as loginPayload;
   } catch (error: any) {
     return error.response.data;
@@ -47,7 +53,10 @@ export const userLogin = async (body: LoginType) => {
 
 export const adminRegister = async (body: RegisterType) => {
   try {
-    const response = await axios.post("http://zyannstore.my.id/admins/register", body);
+    const response = await axios.post(
+      "https://zyannstore.my.id/admins/register",
+      body
+    );
     return response.data as { message: string };
   } catch (error: any) {
     return error.response.data;
@@ -56,7 +65,10 @@ export const adminRegister = async (body: RegisterType) => {
 
 export const adminLogin = async (body: LoginType) => {
   try {
-    const response = await axios.post("http://zyannstore.my.id/admins/login", body);
+    const response = await axios.post(
+      "https://zyannstore.my.id/admins/login",
+      body
+    );
     return response.data as loginAdminPayload;
   } catch (error: any) {
     return error.response.data;

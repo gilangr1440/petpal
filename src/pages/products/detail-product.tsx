@@ -6,8 +6,9 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import Layout from "@/components/layout";
 import NumberFormatter from "@/components/number-formatter";
 
-import { IProductDetail, getProductDetail } from "@/utils/apis/products";
+import { IProductDetail } from "@/utils/apis/products";
 import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 const DetailProduct: React.FC = () => {
   let { id } = useParams<{ id: string }>();
@@ -17,8 +18,10 @@ const DetailProduct: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const fetchData = async () => {
     try {
-      const detailProduct = await getProductDetail(Number(id));
-      setDetailProduct(detailProduct.data);
+      const detailProduct = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/products/${Number(id)}`
+      );
+      setDetailProduct(detailProduct.data.data);
     } catch (error) {
       console.error("Failed to fetch product details:", error);
     }
