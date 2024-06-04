@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout";
 
-import { ProductFormProps, ProductFormValues } from "@/utils/apis/products/interfaces";
+import { IProductDetail, ProductFormProps, ProductFormValues } from "@/utils/apis/products/interfaces";
 
 import { productSchema } from "@/utils/apis/products/scheme";
 import { useLocation } from "react-router-dom";
-import { addProduct } from "@/utils/apis/products";
+import { addProduct, editProduct, getProductDetail } from "@/utils/apis/products";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -19,12 +19,45 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const paramValue = queryParams.get("action");
+  const idProduct = queryParams.get("id");
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [detail, setDetail] = useState<Partial<IProductDetail>>({});
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues,
   });
+  const editForm = useForm<ProductFormValues>({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      product_name: "",
+      price: "",
+      stock: "",
+      description: "",
+    },
+  });
+
+  const hookForm = paramValue == "edit" ? editForm : form;
+
+  const getDetail = async (id: number) => {
+    try {
+      const result = await getProductDetail(id);
+      setDetail(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (paramValue == "edit") {
+      getDetail(Number(idProduct));
+      hookForm.setValue("product_name", String(detail.product_name));
+      hookForm.setValue("price", String(detail.price));
+      hookForm.setValue("stock", String(detail.stock));
+      hookForm.setValue("description", String(detail.description));
+    }
+  }, [detail.product_name, detail.price, detail.stock, detail.description]);
 
   const onSubmit = async (data: ProductFormValues) => {
     const formattedData = {
@@ -34,15 +67,28 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
     };
     console.log(formattedData); // Lakukan sesuatu dengan data produk di sini
 
-    try {
-      const result = await addProduct(formattedData);
-      toast({
-        variant: "success",
-        title: `${result.message}`,
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
+    if (paramValue == "add") {
+      try {
+        const result = await addProduct(formattedData);
+        toast({
+          variant: "success",
+          title: `${result.message}`,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (paramValue == "edit") {
+      try {
+        const result = await editProduct(formattedData, Number(idProduct));
+        toast({
+          variant: "success",
+          title: `${result.message}`,
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -58,21 +104,21 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
     <Layout>
       <Toaster />
       <div className="min-w-[300px] max-w-[912px] mx-auto h-full pt-20">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center justify-start flex-col lg:flex-row rounded-lg p-2 gap-y-8 lg:gap-y-0 gap-x-8 border-2">
+        <Form {...hookForm}>
+          <form onSubmit={hookForm.handleSubmit(onSubmit)} className="flex items-center justify-start flex-col lg:flex-row rounded-lg p-2 gap-y-8 lg:gap-y-0 gap-x-8 border-2">
             <FormField
-              control={form.control}
+              control={hookForm.control}
               name="product_picture"
               render={() => (
                 <div className="min-w-[300px] h-full flex items-start justify-center flex-col gap-y-4">
                   <figure className="w-[300px] h-[300px]">
-                    <img src={selectedImage || "/public/assets/300x300.png"} alt="Product" className="rounded-lg w-full h-full object-cover" />
+                    <img src={selectedImage ? selectedImage : paramValue == "edit" ? detail.product_picture : "/public/assets/300x300.png"} alt="Product" className="rounded-lg w-full h-full object-cover" />
                   </figure>
                   <FormItem>
                     <FormControl>
                       <Controller
                         name="product_picture"
-                        control={form.control}
+                        control={hookForm.control}
                         render={({ field }) => (
                           <Input
                             type="file"
@@ -95,7 +141,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
             />
             <div className="w-full flex justify-start flex-col gap-y-2">
               <FormField
-                control={form.control}
+                control={hookForm.control}
                 name="product_name"
                 render={({ field }) => (
                   <FormItem>
@@ -108,7 +154,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                 )}
               />
               <FormField
-                control={form.control}
+                control={hookForm.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
@@ -121,7 +167,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                 )}
               />
               <FormField
-                control={form.control}
+                control={hookForm.control}
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
@@ -134,7 +180,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                 )}
               />
               <FormField
-                control={form.control}
+                control={hookForm.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
@@ -150,11 +196,6 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                 <Button type="submit" className="mt-4">
                   {paramValue == "add" ? "Add" : paramValue == "edit" ? "Edit" : ""}
                 </Button>
-                {paramValue == "edit" && (
-                  <Button variant={"destructive"} type="submit" className="mt-4">
-                    Delete
-                  </Button>
-                )}
               </div>
             </div>
           </form>

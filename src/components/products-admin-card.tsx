@@ -6,9 +6,10 @@ interface ProductsProps {
   cost: number;
   img: string;
   onClick: () => void;
+  onEdit: () => void;
 }
 
-const ProductsAdminCard: FC<ProductsProps> = ({ title, cost, img, onClick }) => {
+const ProductsAdminCard: FC<ProductsProps> = ({ title, cost, img, onClick, onEdit }) => {
   return (
     <Card className="flex items-start justify-start w-full p-4">
       <CardHeader>
@@ -21,6 +22,9 @@ const ProductsAdminCard: FC<ProductsProps> = ({ title, cost, img, onClick }) => 
           {title}
         </h1>
         <p className="text-base font-medium">Rp. {cost}</p>
+        <button onClick={onEdit} className="p-2 w-32 rounded-md bg-blue-500 text-white">
+          Edit
+        </button>
       </CardContent>
     </Card>
   );
