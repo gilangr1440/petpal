@@ -25,3 +25,10 @@ export interface IProductDetail {
   description: string;
   stock: number;
 }
+
+export interface ProductAdmin {
+  id: number;
+  product_name: string;
+  product_picture: string;
+  price: number;
+}
