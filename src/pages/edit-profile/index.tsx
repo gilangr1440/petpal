@@ -1,9 +1,10 @@
 import Layout from "@/components/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { editUserSchema } from "@/utils/apis/user/types";
+import { EditProfileData } from "@/utils/apis/edit-profile/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { getUserProfile, updateUserProfile } from "@/utils/apis/edit-profile/api";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -55,28 +56,42 @@ const EditProfile = () => {
     form.setValue("koordinat", `${lat?.toFixed(3)}, ${lng?.toFixed(3)}` as string);
   }, [lat, lng]);
 
-  // const inputElement = document.getElementById("upload") as HTMLInputElement;
-  // console.log(inputElement.files);
   const inputElementWatch = form.watch(["profile_picture"]);
-
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
   useEffect(() => {
-    // inputElement?.addEventListener("change", () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewUrl(reader.result);
     };
 
     if (inputElementWatch[0]) reader.readAsDataURL(inputElementWatch[0][0]);
-    // if (inputElement && inputElement.files && inputElement.files.length > 0) {
-    //   reader.readAsDataURL(inputElement.files[0]);
-    // }
-    // });
   }, [inputElementWatch]);
 
-  function onSubmit(values: z.infer<typeof editUserSchema>) {
-    console.log(values);
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const profileData = await getUserProfile();
+        form.reset(profileData);
+        setCoords({
+          lat: parseFloat(profileData.coordinate.split(',')[0]),
+          lng: parseFloat(profileData.coordinate.split(',')[1]),
+        });
+      } catch (error) {
+        console.error('Error fetching profile', error);
+      }
+    }
+
+    fetchProfile();
+  }, [form]);
+
+  async function onSubmit(values: EditProfileData) {
+    try {
+      const updateProfile = await updateUserProfile(values);
+      console.log('Profile updated successfully', updateProfile);
+    } catch (error) {
+      console.error('Error updating profile', error);
+    }
   }
 
   return (
@@ -163,7 +178,7 @@ const EditProfile = () => {
                   name="koordinat"
                   render={({ field }) => (
                     <FormItem className="mb-7">
-                      <FormLabel>Koordinat </FormLabel>
+                      <FormLabel>Coordinate </FormLabel>
                       <Dialog>
                         <DialogTrigger className="hover:text-slate-400 text-xs">Select Coordinate</DialogTrigger>
                         <DialogContent>
