@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }: { children?: React.ReactNode }) => {
   const authProtected = ["/login", "/register"];
   const protectedByToken = ["/edit-profile", "/admin", "/admin/edit-profile", "/admin/products/:product_id", "/admin/products/add-edit/:product_id", "/chat", "/admin/service-requests", "/admin/sales", "/history", "payment"];
   const userProtected = ["/edit-profile", "/chat", "/history", "/payment"];
-  const adminProtected = ["/admin", "/admin/edit-profile", "/admin/products/:product_id", "/admin/products/add-edit/:product_id", "/admin/service-requests", "/admin/sales"];
+  const adminProtected = ["/admin", "/admin/edit-profile", "/admin/products/:product_id", "/admin/products/add-edit/:product_id", "/admin/service-requests", "/admin/sales", "/chat"];
 
   if (authProtected.includes(pathname)) {
     if (cookies.token) return <Navigate to={"/"} />;
