@@ -22,7 +22,7 @@ const Navbar = () => {
       title: "Success logout",
     });
     setTimeout(() => {
-      navigate("login");
+      navigate("/login");
     }, 2000);
   };
 
@@ -77,7 +77,7 @@ const Navbar = () => {
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Hi, {admin.fullName}</DropdownMenuLabel>
+              <DropdownMenuLabel>Hi, {admin.full_name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <NavLink to={"/admin"}>
                 <DropdownMenuItem>Admin</DropdownMenuItem>

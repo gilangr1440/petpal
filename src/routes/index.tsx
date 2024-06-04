@@ -69,7 +69,7 @@ const App = () => {
           element: <DetailProductByAdmin />,
         },
         {
-          path: "/admin/products/add-edit/:product_id",
+          path: "/admin/products/add-edit",
           element: <AddEditProducts />,
         },
         {
