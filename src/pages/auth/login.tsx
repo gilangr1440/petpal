@@ -54,7 +54,6 @@ const Login = () => {
             title: "Wrong email or password!",
           });
         }
-        console.log(result);
       } catch (error: any) {
         console.log(error);
       }
@@ -78,7 +77,6 @@ const Login = () => {
             title: "Wrong email or password!",
           });
         }
-        console.log(result);
       } catch (error: any) {
         console.log(error);
       }

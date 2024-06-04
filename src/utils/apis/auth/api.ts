@@ -46,13 +46,8 @@ export const userLogin = async (body: LoginType) => {
 };
 
 export const adminRegister = async (body: RegisterType) => {
-  const adminBody = {
-    fullname: body.full_name,
-    email: body.email,
-    password: body.password,
-  };
   try {
-    const response = await axios.post("http://zyannstore.my.id/admins/register", adminBody);
+    const response = await axios.post("http://zyannstore.my.id/admins/register", body);
     return response.data as { message: string };
   } catch (error: any) {
     return error.response.data;

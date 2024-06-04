@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 
 import registerImage from "/assets/auth-image.png";
 import logoImage from "/assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerSchema } from "@/utils/apis/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
@@ -18,6 +18,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 const Register = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [role, setRole] = useState<string>("user");
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -39,6 +40,9 @@ const Register = () => {
             variant: "success",
             title: "Success Registered",
           });
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
         } else if (result.message == "error add data") {
           if (result.data.Message.includes("Duplicate entry")) {
             toast({
@@ -47,7 +51,6 @@ const Register = () => {
             });
           }
         }
-        console.log(result);
       } catch (error: any) {
         console.log(error);
       }
@@ -59,13 +62,15 @@ const Register = () => {
             variant: "success",
             title: "Success Registered",
           });
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
         } else if (result.message.includes("Duplicate entry")) {
           toast({
             variant: "destructive",
             title: "Email has been registered",
           });
         }
-        console.log(result);
       } catch (error: any) {
         console.log(error);
       }
