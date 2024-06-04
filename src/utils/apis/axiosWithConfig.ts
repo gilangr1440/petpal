@@ -10,7 +10,9 @@ export const setAxiosConfig = (token: string) => {
 
 axiosWithConfig.interceptors.request.use((axiosConfig) => {
   axiosConfig.baseURL = import.meta.env.VITE_BASE_URL;
-  axiosConfig.headers.Authorization = `Bearer ${USER_JWT_TOKEN}`;
+  if (USER_JWT_TOKEN) {
+    axiosConfig.headers.Authorization = `Bearer ${USER_JWT_TOKEN}`;
+  }
 
   return axiosConfig;
 });
