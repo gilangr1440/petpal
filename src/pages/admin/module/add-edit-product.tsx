@@ -10,7 +10,7 @@ import { ProductFormProps, ProductFormValues } from "@/utils/apis/products/inter
 
 import { productSchema } from "@/utils/apis/products/scheme";
 import { useLocation } from "react-router-dom";
-import { addProduct } from "@/utils/apis/products/api";
+import { addProduct } from "@/utils/apis/products";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 

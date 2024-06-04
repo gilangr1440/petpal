@@ -1,8 +1,30 @@
 import Layout from "@/components/layout";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import ProductsAdminCard from "@/components/products-admin-card";
+import { ProductAdmin, getProductsAdmin } from "@/utils/apis/products";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Admin = () => {
+  const [products, setProducts] = useState<ProductAdmin[]>([]);
+  const navigate = useNavigate();
+
+  const fetchProductsAdmin = async () => {
+    try {
+      const result = await getProductsAdmin();
+      setProducts(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDetail = (id: number) => {
+    navigate(`/products/${id}`);
+  };
+
+  useEffect(() => {
+    fetchProductsAdmin();
+  }, []);
+
   return (
     <Layout>
       <div className="container mx-auto h-full">
@@ -13,30 +35,7 @@ const Admin = () => {
           </Link>
         </header>
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-4 place-items-center">
-          <Link to={"/"}>
-            <Card className="flex items-start justify-center p-6">
-              <CardHeader>
-                <img src="/public/assets/auth-image.png" alt="" className="max-h-[350px]" />
-              </CardHeader>
-              <CardContent className="flex flex-col items-start justify-start gap-y-2">
-                <h1 className="text-2xl font-semibold">Dog Food 1</h1>
-                <p className="text-base font-medium">Rp.200.000</p>
-                <p className="text-base font-normal">Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet</p>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link to={"/"}>
-            <Card className="flex items-start justify-center p-6">
-              <CardHeader>
-                <img src="/public/assets/auth-image.png" alt="" className="max-h-[350px]" />
-              </CardHeader>
-              <CardContent className="flex flex-col items-start justify-start gap-y-2">
-                <h1 className="text-2xl font-semibold">Dog Food 1</h1>
-                <p className="text-base font-medium">Rp.200.000</p>
-                <p className="text-base font-normal">Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet Lorem Ipsum Dolor Sit amet</p>
-              </CardContent>
-            </Card>
-          </Link>
+          {products && products.map((data: ProductAdmin, index: number) => <ProductsAdminCard key={index} title={data.product_name} cost={data.price} img={data.product_picture} onClick={() => handleDetail(data.id)} />)}
         </main>
       </div>
     </Layout>
