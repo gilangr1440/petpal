@@ -21,6 +21,10 @@ const Admin = () => {
     navigate(`/products/${id}`);
   };
 
+  const handleEdit = (id: number) => {
+    navigate(`/admin/products/add-edit?action=edit&id=${id}`);
+  };
+
   useEffect(() => {
     fetchProductsAdmin();
   }, []);
@@ -35,7 +39,10 @@ const Admin = () => {
           </Link>
         </header>
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-4 place-items-center">
-          {products && products.map((data: ProductAdmin, index: number) => <ProductsAdminCard key={index} title={data.product_name} cost={data.price} img={data.product_picture} onClick={() => handleDetail(data.id)} />)}
+          {products &&
+            products.map((data: ProductAdmin, index: number) => (
+              <ProductsAdminCard key={index} title={data.product_name} cost={data.price} img={data.product_picture} onClick={() => handleDetail(data.id)} onEdit={() => handleEdit(data.id)} />
+            ))}
         </main>
       </div>
     </Layout>
