@@ -1,21 +1,22 @@
 import Layout from "@/components/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { editUserSchema } from "@/utils/apis/user/types";
-import { EditProfileData } from "@/utils/apis/edit-profile/schema";
+import { UserTypeZod, editUserSchema } from "@/utils/apis/user/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { getUserProfile, updateUserProfile } from "@/utils/apis/edit-profile/api";
+import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
-import { CameraIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+import { useAuth } from "@/utils/contexts/auth";
+import { editUser } from "@/utils/apis/user/api";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 type coordinateType = {
   lat: number;
@@ -23,8 +24,15 @@ type coordinateType = {
 };
 
 const EditProfile = () => {
+  const { toast } = useToast();
   const [map, setMap] = useState<any>(null);
   const [coords, setCoords] = useState<coordinateType>({ lat: 0, lng: 0 });
+  const { user } = useAuth();
+  const splitAddress = user.address?.split(",");
+  const latitude = splitAddress && splitAddress[splitAddress.length - 2];
+  const longitude = splitAddress && splitAddress[splitAddress.length - 1];
+  const alamatSlice = splitAddress?.splice(0, splitAddress.length - 2).toString();
+  console.log(alamatSlice);
 
   useEffect(() => {
     if (!map) return;
@@ -44,72 +52,59 @@ const EditProfile = () => {
   const form = useForm<z.infer<typeof editUserSchema>>({
     resolver: zodResolver(editUserSchema),
     defaultValues: {
-      fullname: "",
+      full_name: "",
       email: "",
       alamat: "",
       koordinat: "",
-      phone: "",
+      number_phone: "",
     },
   });
 
   useEffect(() => {
-    form.setValue("koordinat", `${lat?.toFixed(3)}, ${lng?.toFixed(3)}` as string);
-  }, [lat, lng]);
+    form.setValue("koordinat", `${lat.toFixed(3)}, ${lng.toFixed(3)}` as string);
+    form.setValue("full_name", user.full_name as string);
+    form.setValue("email", user.email as string);
+    form.setValue("alamat", alamatSlice as string);
+    form.setValue("number_phone", user.number_phone as string);
+  }, [lat, lng, user.full_name, user.email, user.number_phone]);
 
-  const inputElementWatch = form.watch(["profile_picture"]);
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
-  useEffect(() => {
+  const handleImageChange = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewUrl(reader.result);
+      setPreviewUrl(reader.result as string);
     };
+    reader.readAsDataURL(file);
+  };
 
-    if (inputElementWatch[0]) reader.readAsDataURL(inputElementWatch[0][0]);
-  }, [inputElementWatch]);
-
-  useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const profileData = await getUserProfile();
-        form.reset(profileData);
-        setCoords({
-          lat: parseFloat(profileData.coordinate.split(',')[0]),
-          lng: parseFloat(profileData.coordinate.split(',')[1]),
-        });
-      } catch (error) {
-        console.error('Error fetching profile', error);
-      }
-    }
-
-    fetchProfile();
-  }, [form]);
-
-  async function onSubmit(values: EditProfileData) {
+  async function onSubmit(values: UserTypeZod) {
+    console.log(values);
     try {
-      const updateProfile = await updateUserProfile(values);
-      console.log('Profile updated successfully', updateProfile);
+      const result = await editUser(values);
+      toast({
+        variant: "success",
+        title: `${result.message}`,
+      });
+      console.log(result);
     } catch (error) {
-      console.error('Error updating profile', error);
+      console.log(error);
     }
   }
 
   return (
     <Layout>
+      <Toaster />
       <div className="flex items-center justify-center sm:justify-start flex-wrap gap-5 sm:gap-10 w-4/5 mx-auto my-10">
         <div className="relative">
           <Avatar className="w-40 h-40 sm:w-60 sm:h-60">
-            <AvatarImage src={`${previewUrl && previewUrl}`} className="w-full h-full object-cover" />
+            <AvatarImage src={`${previewUrl ? previewUrl : user.profile_picture}`} className="w-full h-full object-cover" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <label htmlFor="upload">
-            <CameraIcon className="absolute right-0 bottom-0 hover:text-blue-300 cursor-pointer" size={40} />
-          </label>
-          <p className="text-sm text-red-500 absolute">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
         </div>
         <div>
-          <h1 className="text-3xl font-bold">John Doe</h1>
-          <h1 className="font-semibold">johndoe@mail.com</h1>
+          <h1 className="text-3xl font-bold">{user.full_name}</h1>
+          <h1 className="font-semibold">{user.email}</h1>
         </div>
       </div>
 
@@ -118,10 +113,33 @@ const EditProfile = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-wrap w-4/5 sm:justify-between mx-auto">
               <div className="w-full sm:w-[48%]">
-                <input type="file" id="upload" hidden {...form.register("profile_picture")} />
+                <FormItem className="mb-4">
+                  <FormLabel>Profile Picture</FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="profile_picture"
+                      control={form.control}
+                      render={({ field }) => (
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file);
+                              handleImageChange(file);
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <p className="text-sm text-red-500">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
+                </FormItem>
                 <FormField
                   control={form.control}
-                  name="fullname"
+                  name="full_name"
                   render={({ field }) => (
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
@@ -145,6 +163,8 @@ const EditProfile = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
                   name="password"
@@ -158,8 +178,6 @@ const EditProfile = () => {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
                   name="alamat"
@@ -202,10 +220,10 @@ const EditProfile = () => {
                       </Dialog>
                       <div className="flex gap-3">
                         <h1>
-                          <b>latitude</b>: {lat?.toFixed(3)}
+                          <b>latitude</b>: {latitude}
                         </h1>
                         <h1>
-                          <b>longitude</b>: {lng?.toFixed(3)}
+                          <b>longitude</b>: {longitude}
                         </h1>
                       </div>
                       <FormControl>
@@ -217,10 +235,10 @@ const EditProfile = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="number_phone"
                   render={({ field }) => (
                     <FormItem className="mb-4">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
                         <Input type="text" placeholder="0898369234" {...field} />
                       </FormControl>
@@ -228,10 +246,12 @@ const EditProfile = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80 float-right">
-                  Edit Profile
-                </Button>
               </div>
+            </div>
+            <div className="flex flex-wrap w-4/5 sm:justify-end mx-auto">
+              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+                Edit Profile
+              </Button>
             </div>
           </form>
         </Form>

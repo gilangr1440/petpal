@@ -42,12 +42,12 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={user.profile_picture} className="w-full h-full object-cover" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Hi, {user.full_name}</DropdownMenuLabel>
+              <DropdownMenuLabel>Hi, {user.full_name != "" ? user.full_name : ""}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <NavLink to={"clinic-lists"}>
                 <DropdownMenuItem>Clinic</DropdownMenuItem>
@@ -72,12 +72,12 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src={admin.profile_picture} className="w-full h-full object-cover" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Hi, {admin.full_name}</DropdownMenuLabel>
+              <DropdownMenuLabel>Hi, {admin ? admin?.full_name : ""}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <NavLink to={"/admin"}>
                 <DropdownMenuItem>Admin</DropdownMenuItem>

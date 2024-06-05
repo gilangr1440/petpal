@@ -9,7 +9,7 @@ import Layout from "@/components/layout";
 import { IProductDetail, ProductFormProps, ProductFormValues } from "@/utils/apis/products/interfaces";
 
 import { productSchema } from "@/utils/apis/products/scheme";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { addProduct, editProduct, getProductDetail } from "@/utils/apis/products";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -20,6 +20,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
   const queryParams = new URLSearchParams(location.search);
   const paramValue = queryParams.get("action");
   const idProduct = queryParams.get("id");
+  const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [detail, setDetail] = useState<Partial<IProductDetail>>({});
@@ -74,6 +75,9 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
           variant: "success",
           title: `${result.message}`,
         });
+        setTimeout(() => {
+          navigate("/admin");
+        }, 2000);
         console.log(result);
       } catch (error) {
         console.log(error);
@@ -85,6 +89,9 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
           variant: "success",
           title: `${result.message}`,
         });
+        setTimeout(() => {
+          navigate("/admin");
+        }, 2000);
         console.log(result);
       } catch (error) {
         console.log(error);

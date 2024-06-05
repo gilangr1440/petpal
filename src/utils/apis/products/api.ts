@@ -11,6 +11,16 @@ export const getProducts = async (params?: string) => {
   }
 };
 
+export const getProductDetail = async (id: number) => {
+  try {
+    const response = await axiosWithConfig.get(`/products/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+    throw error;
+  }
+};
+
 export const addProduct = async (body: ProductFormValues) => {
   try {
     const formData = new FormData();
@@ -24,10 +34,7 @@ export const addProduct = async (body: ProductFormValues) => {
       formData.append("product_picture", body.product_picture);
     }
 
-    const response = await axiosWithConfig.post(
-      "https://zyannstore.my.id/products",
-      formData
-    );
+    const response = await axiosWithConfig.post("https://zyannstore.my.id/products", formData);
     return response.data;
   } catch (error: any) {
     console.error("Error adding product:", error);
@@ -61,7 +68,7 @@ export const editProduct = async (body: ProductFormValues, id: number) => {
     const response = await axiosWithConfig.patch(`http://zyannstore.my.id/products/${id}`, formData);
     return response.data;
   } catch (error: any) {
-    console.error("Error adding product:", error);
+    console.error("Error edit product:", error);
     throw error;
   }
 };
