@@ -1,5 +1,5 @@
-import { AdminType } from "./types";
-import { getAdmin } from "./api";
+import { AdminType, editAdminSchema, AdminFormValues } from "./types";
+import { getAdmin, editAdmin } from "./api";
 
-export { getAdmin };
-export type { AdminType };
+export { getAdmin, editAdminSchema, editAdmin };
+export type { AdminType, AdminFormValues };

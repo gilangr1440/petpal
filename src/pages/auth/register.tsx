@@ -31,7 +31,6 @@ const Register = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    console.log(values);
     if (role == "user") {
       try {
         const result = await userRegister(values);
@@ -86,7 +85,9 @@ const Register = () => {
       <Toaster />
       <div className="flex w-full justify-between flex-wrap">
         <div className="w-full sm:w-1/2">
-          <img src={logoImage} alt="PetPal" className="w-72 mx-auto" />
+          <Link to={"/"}>
+            <img src={logoImage} alt="PetPal" className="w-72 mx-auto" />
+          </Link>
           <div className="w-4/5 flex justify-center mx-auto">
             <Tabs defaultValue="user" className="w-full flex flex-col items-center">
               <TabsList>

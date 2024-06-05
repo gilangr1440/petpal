@@ -11,13 +11,9 @@ export const editUserSchema = z.object({
   koordinat: z.string().min(1, { message: "Koordinat is required" }),
   number_phone: z.string().min(8, { message: "Phone must be at least 8" }),
   profile_picture: z
-    .any()
-    .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), "Only .jpg, .jpeg, .png formats are supported")
-    .refine((files) => files?.[0]?.size <= MAX_UPLOAD_SIZE, {
-      message: `Max file size is 5MB.`,
-    })
-    .optional()
-    .or(z.literal("")),
+    .instanceof(File)
+    .refine((file) => file.size <= MAX_UPLOAD_SIZE, `Max image size is ${MAX_MB}MB`)
+    .refine((file) => file.type === "" || ACCEPTED_IMAGE_TYPES.includes(file.type), "Only .jpg, .jpeg, and .png formats are supported"),
 });
 
 export type UserType = {
@@ -30,4 +26,12 @@ export type UserType = {
   number_phone?: string;
 };
 
-export type UserTypeZod = z.infer<typeof editUserSchema>;
+export interface UserFormValues {
+  full_name: string;
+  email: string;
+  password: string | undefined;
+  alamat: string;
+  koordinat: string;
+  number_phone: string;
+  profile_picture: File | null;
+}

@@ -33,7 +33,6 @@ const Login = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    console.log(values);
     if (role == "user") {
       try {
         const result = await userLogin(values);
@@ -72,10 +71,15 @@ const Login = () => {
           setTimeout(() => {
             navigate("/");
           }, 2000);
-        } else if (result.message == "login gagal: email atau password tidak sesuai") {
+        } else if (result.message == "login failed: email atau password tidak sesuai") {
           toast({
             variant: "destructive",
             title: "Wrong email or password!",
+          });
+        } else if (result.message == "login failed: record not found") {
+          toast({
+            variant: "destructive",
+            title: "User not found",
           });
         }
       } catch (error: any) {
@@ -93,7 +97,9 @@ const Login = () => {
       <Toaster />
       <div className="flex w-full justify-between flex-wrap">
         <div className="w-full sm:w-1/2">
-          <img src={logoImage} alt="PetPal" className="w-72 mx-auto" />
+          <Link to={"/"}>
+            <img src={logoImage} alt="PetPal" className="w-72 mx-auto" />
+          </Link>
           <div className="w-4/5 flex justify-center mx-auto">
             <Tabs defaultValue="user" className="w-full flex flex-col items-center">
               <TabsList>

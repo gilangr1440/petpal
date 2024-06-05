@@ -66,7 +66,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
       price: parseFloat(data.price as string),
       stock: parseInt(data.stock as string, 10),
     };
-    console.log(formattedData); // Lakukan sesuatu dengan data produk di sini
+    // console.log(formattedData); // Lakukan sesuatu dengan data produk di sini
 
     if (paramValue == "add") {
       try {
