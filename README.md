@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-    <img width="33%" src="public/assets/logo.png" alt="logo-petpal">
+    <img width="33%" src="public/assets/logo-with-text.png" alt="logo-petpal">
 </p>
 
 ## 📄 About the Project
