@@ -79,7 +79,7 @@ const EditProfileAdmin = () => {
     form.setValue("email", admin.email as string);
     form.setValue("address", admin.address as string);
     form.setValue("number_phone", admin.number_phone as string);
-  }, [lat, lng, admin.full_name, admin.email, admin.number_phone, admin.coordinate, admin.address]);
+  }, [lat, lng, admin?.full_name, admin?.email, admin?.number_phone, admin?.coordinate, admin?.address]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
@@ -125,7 +125,7 @@ const EditProfileAdmin = () => {
       <div className="flex items-center justify-center sm:justify-start flex-wrap gap-5 sm:gap-10 w-4/5 mx-auto my-10">
         <div className="relative">
           <Avatar className="w-40 h-40 sm:w-60 sm:h-60">
-            <AvatarImage src={`${previewUrl ? previewUrl : admin.profile_picture}`} className="w-full h-full object-cover" />
+            <AvatarImage src={`${previewUrl ? previewUrl : admin?.profile_picture}`} className="w-full h-full object-cover" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <label htmlFor="upload">
@@ -299,49 +299,53 @@ const EditProfileAdmin = () => {
         </Form>
       </div>
 
-      <div className="w-4/5 mx-auto my-5 shadow-md rounded-lg p-5 sm:p-10 flex sm:justify-center md:gap-4 lg:gap-10 flex-wrap">
-        <div className="md:w-[30%] lg:w-1/5 h-64">
-          <img src="https://source.unsplash.com/random?doctor" alt="doctor" className="w-full h-full object-cover rounded-md" />
-        </div>
-        <div className="md:w-[65%] lg:w-[75%]">
-          <h1 className="text-2xl font-semibold mb-3">{dataDokter?.full_name}</h1>
-          <div className="grid grid-cols-2 gap-x-3 w-full sm:w-1/2">
-            <div className="border-r border-r-slate-400">
-              <h1 className="text-[#777676]">Price</h1>
-              <h1 className="text-[#777676]">Rp. {dataDokter?.price}</h1>
+      {dataDokter ? (
+        <div className="w-4/5 mx-auto my-5 shadow-md rounded-lg p-5 sm:p-10 flex sm:justify-center md:gap-4 lg:gap-10 flex-wrap">
+          <div className="md:w-[30%] lg:w-1/5 h-64">
+            <img src={`${dataDokter.profile_picture}`} alt="doctor" className="w-full h-full object-cover rounded-md" />
+          </div>
+          <div className="md:w-[65%] lg:w-[75%]">
+            <h1 className="text-2xl font-semibold mb-3">{dataDokter?.full_name}</h1>
+            <div className="grid grid-cols-2 gap-x-3 w-full sm:w-1/2">
+              <div className="border-r border-r-slate-400">
+                <h1 className="text-[#777676]">Price</h1>
+                <h1 className="text-[#777676]">Rp. {dataDokter?.price}</h1>
+              </div>
+              <div>
+                <h1 className="text-[#777676]">Location</h1>
+                <h1 className="text-[#777676]">{admin?.address}</h1>
+              </div>
+            </div>
+            <div className="my-10">
+              <h1 className="text-2xl font-semibold">About</h1>
+              <p className="text-[#777676] lg:w-4/5 text-justify">{dataDokter?.about}</p>
             </div>
             <div>
-              <h1 className="text-[#777676]">Location</h1>
-              <h1 className="text-[#777676]">{admin.address}</h1>
+              <h1 className="text-xl font-semibold my-5">Available days</h1>
+              <ul className="flex gap-2">
+                {arrAvailable.map((value: string, index: number) => {
+                  return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
+                })}
+              </ul>
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold my-5">Service</h1>
+              <ul>
+                {arrService.map((value: string, index: number) => {
+                  return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
+                })}
+              </ul>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+                Edit Doctor
+              </Button>
             </div>
           </div>
-          <div className="my-10">
-            <h1 className="text-2xl font-semibold">About</h1>
-            <p className="text-[#777676] lg:w-4/5 text-justify">{dataDokter?.about}</p>
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold my-5">Available days</h1>
-            <ul className="flex gap-2">
-              {arrAvailable.map((value: string, index: number) => {
-                return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
-              })}
-            </ul>
-          </div>
-          <div>
-            <h1 className="text-xl font-semibold my-5">Service</h1>
-            <ul>
-              {arrService.map((value: string, index: number) => {
-                return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
-              })}
-            </ul>
-          </div>
-          <div className="flex gap-3 justify-end">
-            <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
-              Edit Doctor
-            </Button>
-          </div>
         </div>
-      </div>
+      ) : (
+        <div>There is no doctor's data yet</div>
+      )}
     </Layout>
   );
 };
