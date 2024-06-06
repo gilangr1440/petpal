@@ -15,6 +15,7 @@ import { Icon } from "leaflet";
 import { useAuth } from "@/utils/contexts/auth";
 import { AdminFormValues, editAdmin, editAdminSchema } from "@/utils/apis/admin";
 import { Camera } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type coordinateType = {
   lat: number;
@@ -22,6 +23,7 @@ type coordinateType = {
 };
 
 const EditProfileAdmin = () => {
+  const navigate = useNavigate();
   const [map, setMap] = useState<any>(null);
   const [coords, setCoords] = useState<coordinateType>({ lat: 0, lng: 0 });
   const { admin } = useAuth();
@@ -255,7 +257,7 @@ const EditProfileAdmin = () => {
               </div>
             </div>
             <div className="flex gap-3 w-4/5 justify-end mx-auto">
-              <Button type="button" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" onClick={() => navigate("/admin/add-doctor")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Add New Doctor
               </Button>
               <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">

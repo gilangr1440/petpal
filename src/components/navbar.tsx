@@ -42,7 +42,7 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src={user.profile_picture} className="w-full h-full object-cover" />
+                <AvatarImage src={user?.profile_picture} className="w-full h-full object-cover" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
@@ -72,7 +72,7 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src={admin.profile_picture} className="w-full h-full object-cover" />
+                <AvatarImage src={admin?.profile_picture} className="w-full h-full object-cover" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
