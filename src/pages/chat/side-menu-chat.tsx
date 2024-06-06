@@ -11,10 +11,7 @@ const SideMenuChat = () => {
 
   const getRoomChat = async () => {
     const response = await getConsultations();
-    const paidConsultations = response.data.filter(
-      (item: any) => item.transaction_status === "Paid"
-    );
-    setRoomChat(paidConsultations);
+    setRoomChat(response.data);
   };
 
   useEffect(() => {
@@ -28,17 +25,17 @@ const SideMenuChat = () => {
     >
       {roomChat.map((item: any) => (
         <div
-          key={item.id}
+          key={item.ID}
           className="w-full p-3 rounded-md flex items-center gap-3 bg-[#226583] hover:bg-[#226583]/70 cursor-pointer"
         >
           <Avatar className="w-10 h-10">
             <AvatarImage
-              src={item.doctor_profile_picture}
+              src={item.DoctorDetails.profile_picture}
               className="w-full h-full object-cover rounded-full"
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <h1 className="text-white">{item.doctor_fullname}</h1>
+          <h1 className="text-white">{item.DoctorDetails.full_name}</h1>
         </div>
       ))}
     </div>

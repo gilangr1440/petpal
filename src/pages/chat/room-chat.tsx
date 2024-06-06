@@ -3,10 +3,14 @@ import { useCookies } from "react-cookie";
 import HeaderChat from "./header-chat";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { getChatMessages, postChatMessage } from "@/utils/apis/chat/api";
 
-const RoomChat = () => {
+interface IProps {
+  roomChatId: number;
+}
+
+const RoomChat = ({ roomChatId }: IProps) => {
   const [newChat, setNewChat] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<any[] | null>([]);
@@ -14,7 +18,6 @@ const RoomChat = () => {
 
   const [cookies] = useCookies();
   const loginId = cookies.login_id;
-  let userRole = cookies.role;
 
   const scrollerRef = useRef<HTMLDivElement>(null);
 
@@ -26,31 +29,42 @@ const RoomChat = () => {
 
   const getMessages = async () => {
     setLoading(true);
-    const chatId = 2;
-    const newMessages = await getChatMessages(chatId);
-    setMessages((prevMessages) => [
-      ...(prevMessages || []),
-      ...newMessages.data,
-    ]);
+    const newMessages = await getChatMessages(roomChatId);
+    if (Array.isArray(newMessages.data)) {
+      setMessages((prevMessages: any) => {
+        prevMessages.push(...newMessages.data);
+        return prevMessages;
+      });
+    } else {
+      console.error(
+        "Expected an array of messages, but got:",
+        newMessages.data
+      );
+    }
     setLoading(false);
   };
 
   useEffect(() => {
     getMessages();
-  }, []);
+  }, [roomChatId]);
 
   const sendMessage = async () => {
     if (!newChat.replace(/\s+/g, "")) {
       return;
     }
     setSending(true);
-    const chatId = 2;
-    const response = await postChatMessage(chatId, newChat);
+    const response = await postChatMessage(roomChatId, newChat);
+    console.log(response);
     if (response) {
       const newMessage = {
         message: newChat,
+        sender_id: loginId,
       };
-      setMessages((prevMessages: any) => [...prevMessages, newMessage]);
+      if (messages) {
+        setMessages([...messages, newMessage]);
+      } else {
+        setMessages([newMessage]);
+      }
       setNewChat("");
       setSending(false);
     } else {
@@ -95,24 +109,16 @@ const RoomChat = () => {
               <div
                 key={index}
                 className={`flex ${
-                  userRole == "user" &&
-                  message.sender_id == loginId &&
-                  "justify-end"
-                } ${
-                  userRole == "admin" &&
-                  message.sender_id != loginId &&
-                  "justify-end"
+                  message.sender_id === loginId
+                    ? "justify-end"
+                    : "justify-start"
                 }`}
               >
                 <div
-                  className={`w-fit rounded-lg p-2 bg-[#9ED1E3] ${
-                    userRole == "user" &&
-                    message.sender_id == loginId &&
-                    "bg-[#C6D6CE]"
-                  } ${
-                    userRole == "admin" &&
-                    message.sender_id != loginId &&
-                    "bg-[#C6D6CE]"
+                  className={`w-fit rounded-lg p-2 ${
+                    message.sender_id === loginId
+                      ? "bg-[#9ED1E3]"
+                      : "bg-[#C6D6CE]"
                   }`}
                 >
                   <p className="text-justify">{message.message}</p>
