@@ -28,10 +28,8 @@ const EditProfile = () => {
   const [map, setMap] = useState<any>(null);
   const [coords, setCoords] = useState<coordinateType>({ lat: 0, lng: 0 });
   const { user } = useAuth();
-  const splitAddress = user.address?.split(",");
-  const latitude = splitAddress && splitAddress[splitAddress.length - 2];
-  const longitude = splitAddress && splitAddress[splitAddress.length - 1];
-  const alamatSlice = splitAddress?.splice(0, splitAddress.length - 2).toString();
+  const latitude = user?.coordinate?.split(",")[0];
+  const longitude = user?.coordinate?.split(",")[1];
 
   useEffect(() => {
     if (!map) return;
@@ -42,6 +40,7 @@ const EditProfile = () => {
   }, [map]);
 
   const { lat, lng } = coords;
+  const coor = lat != 0 && lng != 0 ? `${lat.toFixed(3)}, ${lng.toFixed(3)}` : null;
 
   const customIcon = new Icon({
     iconUrl: "../../../public/assets/placeholder.png",
@@ -53,19 +52,19 @@ const EditProfile = () => {
     defaultValues: {
       full_name: "",
       email: "",
-      alamat: "",
-      koordinat: "",
+      address: "",
+      coordinate: "",
       number_phone: "",
     },
   });
 
   useEffect(() => {
-    form.setValue("koordinat", `${lat.toFixed(3)}, ${lng.toFixed(3)}` as string);
+    form.setValue("coordinate", coor ? coor : (user.coordinate as string));
     form.setValue("full_name", user.full_name as string);
     form.setValue("email", user.email as string);
-    form.setValue("alamat", alamatSlice as string);
+    form.setValue("address", user.address as string);
     form.setValue("number_phone", user.number_phone as string);
-  }, [lat, lng, user.full_name, user.email, user.number_phone]);
+  }, [lat, lng, user.full_name, user.email, user.number_phone, user.address, user.coordinate]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
@@ -78,17 +77,12 @@ const EditProfile = () => {
   };
 
   async function onSubmit(values: UserFormValues) {
-    if (values.koordinat == "0.000, 0.000") {
-      values.koordinat = `${latitude}, ${longitude}`;
-    }
-    console.log(values);
     try {
       const result = await editUser(values);
       toast({
         variant: "success",
         title: `${result.message}`,
       });
-      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -194,7 +188,7 @@ const EditProfile = () => {
               <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
-                  name="alamat"
+                  name="address"
                   render={({ field }) => (
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
@@ -207,7 +201,7 @@ const EditProfile = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="koordinat"
+                  name="coordinate"
                   render={({ field }) => (
                     <FormItem className="mb-7">
                       <FormLabel>Coordinate </FormLabel>
@@ -241,7 +235,7 @@ const EditProfile = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="hidden" placeholder="Your Address Koordinat" {...field} />
+                        <Input type="text" placeholder="Your Address Koordinat" className="hidden" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

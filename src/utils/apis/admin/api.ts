@@ -17,13 +17,13 @@ export const getAdmin = async () => {
 
 export const editAdmin = async (body: AdminFormValues) => {
   try {
-    const address = `${body.alamat}, ${body.koordinat}`;
     const formData = new FormData();
 
     formData.append("full_name", body.full_name);
     formData.append("email", body.email);
     formData.append("number_phone", body.number_phone);
-    formData.append("address", address);
+    formData.append("address", body.address);
+    formData.append("coordinate", body.coordinate);
 
     if (body.password) {
       formData.append("password", body.password as string);
@@ -34,7 +34,7 @@ export const editAdmin = async (body: AdminFormValues) => {
     }
 
     const response = await axiosWithConfig.put("https://zyannstore.my.id/admins", formData);
-    return response;
+    return response.data as { message: string };
   } catch (error: any) {
     return error.response;
   }

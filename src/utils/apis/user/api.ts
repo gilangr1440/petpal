@@ -17,18 +17,13 @@ export const getUser = async () => {
 
 export const editUser = async (body: UserTypeZod) => {
   try {
-    let address = "";
-    if (body.koordinat != "0.000, 0.000") {
-      address = `${body.alamat}, ${body.koordinat}`;
-    } else {
-      address = `${body.alamat}`;
-    }
     const formData = new FormData();
 
     formData.append("full_name", body.full_name);
     formData.append("email", body.email);
     formData.append("number_phone", body.number_phone);
-    formData.append("address", address);
+    formData.append("address", body.address);
+    formData.append("coordinate", body.coordinate);
 
     if (body.password) {
       formData.append("password", body.password as string);

@@ -16,6 +16,9 @@ import { useAuth } from "@/utils/contexts/auth";
 import { AdminFormValues, editAdmin, editAdminSchema } from "@/utils/apis/admin";
 import { Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { AvailableDays, DoctorFormattedData, Services, getDoctor } from "@/utils/apis/doctor";
 
 type coordinateType = {
   lat: number;
@@ -24,13 +27,24 @@ type coordinateType = {
 
 const EditProfileAdmin = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [dataDokter, setDataDokter] = useState<Partial<DoctorFormattedData>>({});
+  const [available, setAvailable] = useState<AvailableDays[]>([]);
+  const [services, setServices] = useState<Services[]>([]);
   const [map, setMap] = useState<any>(null);
   const [coords, setCoords] = useState<coordinateType>({ lat: 0, lng: 0 });
   const { admin } = useAuth();
-  const splitAddress = admin.address?.split(",");
-  const latitude = splitAddress && splitAddress[splitAddress.length - 2];
-  const longitude = splitAddress && splitAddress[splitAddress.length - 1];
-  const alamatSlice = splitAddress?.splice(0, splitAddress.length - 2).toString();
+  const latitude = admin?.coordinate?.split(",")[0];
+  const longitude = admin?.coordinate?.split(",")[1];
+  const arrAvailable = [];
+  const arrService = [];
+
+  for (const [key, value] of Object.entries(available)) {
+    if (value) arrAvailable.push(key);
+  }
+  for (const [key, value] of Object.entries(services)) {
+    if (value) arrService.push(key);
+  }
 
   useEffect(() => {
     if (!map) return;
@@ -41,6 +55,7 @@ const EditProfileAdmin = () => {
   }, [map]);
 
   const { lat, lng } = coords;
+  const coor = lat != 0 && lng != 0 ? `${lat.toFixed(3)}, ${lng.toFixed(3)}` : null;
 
   const customIcon = new Icon({
     iconUrl: "../../../public/assets/placeholder.png",
@@ -52,19 +67,19 @@ const EditProfileAdmin = () => {
     defaultValues: {
       full_name: "",
       email: "",
-      alamat: "",
-      koordinat: "",
+      address: "",
+      coordinate: "",
       number_phone: "",
     },
   });
 
   useEffect(() => {
-    form.setValue("koordinat", `${lat?.toFixed(3)}, ${lng?.toFixed(3)}` as string);
+    form.setValue("coordinate", coor ? coor : (admin.coordinate as string));
     form.setValue("full_name", admin.full_name as string);
     form.setValue("email", admin.email as string);
-    form.setValue("alamat", alamatSlice as string);
+    form.setValue("address", admin.address as string);
     form.setValue("number_phone", admin.number_phone as string);
-  }, [lat, lng, admin.full_name, admin.email, admin.number_phone]);
+  }, [lat, lng, admin.full_name, admin.email, admin.number_phone, admin.coordinate, admin.address]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
@@ -77,24 +92,40 @@ const EditProfileAdmin = () => {
   };
 
   async function onSubmit(values: AdminFormValues) {
-    if (values.koordinat == "0.000, 0.000") {
-      values.koordinat = `${latitude}, ${longitude}`;
-    }
-    console.log(values);
     try {
       const result = await editAdmin(values);
-      console.log(result);
+      toast({
+        variant: "success",
+        title: `${result.message}`,
+      });
     } catch (error) {
       console.log(error);
     }
   }
 
+  const getDataDoctor = async () => {
+    try {
+      const result = await getDoctor();
+      console.log(result);
+      setDataDokter(result.data);
+      setAvailable(result.data.available_days);
+      setServices(result.data.service);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDataDoctor();
+  }, []);
+
   return (
     <Layout>
+      <Toaster />
       <div className="flex items-center justify-center sm:justify-start flex-wrap gap-5 sm:gap-10 w-4/5 mx-auto my-10">
         <div className="relative">
           <Avatar className="w-40 h-40 sm:w-60 sm:h-60">
-            <AvatarImage src={`${previewUrl && previewUrl}`} className="w-full h-full object-cover" />
+            <AvatarImage src={`${previewUrl ? previewUrl : admin.profile_picture}`} className="w-full h-full object-cover" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <label htmlFor="upload">
@@ -105,8 +136,8 @@ const EditProfileAdmin = () => {
           <p className="text-sm text-red-500">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
         </div>
         <div>
-          <h1 className="text-3xl font-bold">{admin.full_name}</h1>
-          <h1 className="font-semibold">{admin.email}</h1>
+          <h1 className="text-3xl font-bold">{admin?.full_name}</h1>
+          <h1 className="font-semibold">{admin?.email}</h1>
         </div>
       </div>
 
@@ -188,7 +219,7 @@ const EditProfileAdmin = () => {
               <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
-                  name="alamat"
+                  name="address"
                   render={({ field }) => (
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
@@ -201,7 +232,7 @@ const EditProfileAdmin = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="koordinat"
+                  name="coordinate"
                   render={({ field }) => (
                     <FormItem className="mb-7">
                       <FormLabel>Koordinat </FormLabel>
@@ -235,7 +266,7 @@ const EditProfileAdmin = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="hidden" placeholder="Your Address Koordinat" {...field} />
+                        <Input type="text" placeholder="Your Address Koordinat" className="hidden" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -273,33 +304,35 @@ const EditProfileAdmin = () => {
           <img src="https://source.unsplash.com/random?doctor" alt="doctor" className="w-full h-full object-cover rounded-md" />
         </div>
         <div className="md:w-[65%] lg:w-[75%]">
-          <h1 className="text-2xl font-semibold mb-3">Drh. John Doe</h1>
+          <h1 className="text-2xl font-semibold mb-3">{dataDokter?.full_name}</h1>
           <div className="grid grid-cols-2 gap-x-3 w-full sm:w-1/2">
             <div className="border-r border-r-slate-400">
               <h1 className="text-[#777676]">Price</h1>
-              <h1 className="text-[#777676]">Rp. 100.000</h1>
+              <h1 className="text-[#777676]">Rp. {dataDokter?.price}</h1>
             </div>
             <div>
               <h1 className="text-[#777676]">Location</h1>
-              <h1 className="text-[#777676]">Bandung, West Java</h1>
+              <h1 className="text-[#777676]">{admin.address}</h1>
             </div>
           </div>
           <div className="my-10">
             <h1 className="text-2xl font-semibold">About</h1>
-            <p className="text-[#777676] lg:w-4/5 text-justify">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta tempora facilis necessitatibus neque, nostrum sequi aliquid iste harum accusamus itaque perferendis autem ea optio dignissimos tenetur? Officiis aliquid dolorum
-              molestias.
-            </p>
+            <p className="text-[#777676] lg:w-4/5 text-justify">{dataDokter?.about}</p>
           </div>
           <div>
             <h1 className="text-xl font-semibold my-5">Available days</h1>
-            <h1>Senin, Selasa, Rabu, Kamis, Jum'at, Sabtu, Minggu</h1>
+            <ul className="flex gap-2">
+              {arrAvailable.map((value: string, index: number) => {
+                return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
+              })}
+            </ul>
           </div>
           <div>
             <h1 className="text-xl font-semibold my-5">Service</h1>
             <ul>
-              <li>Medical Checkup</li>
-              <li>Konsultasi Online</li>
+              {arrService.map((value: string, index: number) => {
+                return <li key={index}>{value[0].toUpperCase() + value.slice(1)}</li>;
+              })}
             </ul>
           </div>
           <div className="flex gap-3 justify-end">

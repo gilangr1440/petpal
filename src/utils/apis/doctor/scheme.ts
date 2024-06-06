@@ -20,7 +20,7 @@ export const doctorSchema = z.object({
   services: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
   }),
-  doctor_picture: z
+  profile_picture: z
     .instanceof(File)
     .optional()
     .refine((file) => !file || file.size <= MAX_UPLOAD_SIZE, `Max image size is ${MAX_MB}MB`)
