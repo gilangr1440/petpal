@@ -42,10 +42,10 @@ export const addProduct = async (body: ProductFormValues) => {
   }
 };
 
-export const getProductsAdmin = async () => {
+export const getProductsAdmin = async (page: number) => {
   try {
-    const response = await axiosWithConfig.get("/products");
-    return response.data;
+    const response = await axiosWithConfig.get(`/products?page=${page}`);
+    return response;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
@@ -65,7 +65,7 @@ export const editProduct = async (body: ProductFormValues, id: number) => {
       formData.append("product_picture", body.product_picture);
     }
 
-    const response = await axiosWithConfig.patch(`http://zyannstore.my.id/products/${id}`, formData);
+    const response = await axiosWithConfig.patch(`https://zyannstore.my.id/products/${id}`, formData);
     return response.data;
   } catch (error: any) {
     console.error("Error edit product:", error);
