@@ -1,35 +1,13 @@
-//? Components
 import Layout from "@/components/layout";
 import Hero from "./Hero";
 import CategoryTabs from "./category-tabs";
-
-//? Utils
-import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { sortProductsAtom } from "@/utils/jotai/atom";
-import { IProductListData, getProducts } from "@/utils/apis/products";
-import ProductList from "@/components/product-list";
+import { useState } from "react";
 import SortProducts from "@/components/sort-product";
-import Loaders from "@/components/loaders";
+import HomeProductList from "./home-product-list";
+import HomeClinicList from "./home-clinic-list";
 
 const Home = () => {
-  const [data, setData] = useState<IProductListData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [sort] = useAtom(sortProductsAtom);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const products = await getProducts(`${sort && `sort=${sort}`}`);
-        setData(products.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchData();
-  }, [sort]);
+  const [activeTab, setActiveTab] = useState("petshop");
 
   return (
     <Layout>
@@ -39,23 +17,15 @@ const Home = () => {
         </div>
       </section>
       <section className="relative container mx-auto h-full flex items-start justify-center flex-col gap-y-8 py-6">
-        {loading ? (
-          <Loaders className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2" />
-        ) : (
-          <>
-            <header
-              className={`w-full flex flex-col ${
-                loading
-                  ? "items-center justify-center"
-                  : "items-start justify-between"
-              } sm:items-end  gap-y-4 sm:flex-row`}
-            >
-              <CategoryTabs />
-              <SortProducts />
-            </header>
-            <ProductList data={data} />
-          </>
-        )}
+        <>
+          <header
+            className={`w-full flex flex-col sm:items-end gap-y-4 sm:flex-row sm:justify-between`}
+          >
+            <CategoryTabs onTabChange={setActiveTab} />
+            <SortProducts />
+          </header>
+          {activeTab === "petshop" ? <HomeProductList /> : <HomeClinicList />}
+        </>
       </section>
     </Layout>
   );
