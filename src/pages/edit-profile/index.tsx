@@ -1,12 +1,11 @@
 import Layout from "@/components/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserTypeZod, editUserSchema } from "@/utils/apis/user/types";
+import { UserFormValues, editUserSchema } from "@/utils/apis/user/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 
@@ -17,6 +16,7 @@ import { useAuth } from "@/utils/contexts/auth";
 import { editUser } from "@/utils/apis/user/api";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Camera } from "lucide-react";
 
 type coordinateType = {
   lat: number;
@@ -32,7 +32,6 @@ const EditProfile = () => {
   const latitude = splitAddress && splitAddress[splitAddress.length - 2];
   const longitude = splitAddress && splitAddress[splitAddress.length - 1];
   const alamatSlice = splitAddress?.splice(0, splitAddress.length - 2).toString();
-  console.log(alamatSlice);
 
   useEffect(() => {
     if (!map) return;
@@ -49,7 +48,7 @@ const EditProfile = () => {
     iconSize: [38, 38],
   });
 
-  const form = useForm<z.infer<typeof editUserSchema>>({
+  const form = useForm<UserFormValues>({
     resolver: zodResolver(editUserSchema),
     defaultValues: {
       full_name: "",
@@ -78,7 +77,10 @@ const EditProfile = () => {
     reader.readAsDataURL(file);
   };
 
-  async function onSubmit(values: UserTypeZod) {
+  async function onSubmit(values: UserFormValues) {
+    if (values.koordinat == "0.000, 0.000") {
+      values.koordinat = `${latitude}, ${longitude}`;
+    }
     console.log(values);
     try {
       const result = await editUser(values);
@@ -101,6 +103,12 @@ const EditProfile = () => {
             <AvatarImage src={`${previewUrl ? previewUrl : user.profile_picture}`} className="w-full h-full object-cover" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
+          <label htmlFor="upload">
+            <div className="absolute bottom-0 right-0 bg-white hover:bg-gray-300 p-2 cursor-pointer rounded-full">
+              <Camera size={40} />
+            </div>
+          </label>
+          <p className="text-sm text-red-500">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
         </div>
         <div>
           <h1 className="text-3xl font-bold">{user.full_name}</h1>
@@ -113,30 +121,36 @@ const EditProfile = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-wrap w-4/5 sm:justify-between mx-auto">
               <div className="w-full sm:w-[48%]">
-                <FormItem className="mb-4">
-                  <FormLabel>Profile Picture</FormLabel>
-                  <FormControl>
-                    <Controller
-                      name="profile_picture"
-                      control={form.control}
-                      render={({ field }) => (
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              field.onChange(file);
-                              handleImageChange(file);
-                            }
-                          }}
+                <FormField
+                  control={form.control}
+                  name="profile_picture"
+                  render={() => (
+                    <FormItem className="mb-4 hidden">
+                      <FormLabel>Profile Picture</FormLabel>
+                      <FormControl>
+                        <Controller
+                          name="profile_picture"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              id="upload"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  field.onChange(file);
+                                  handleImageChange(file);
+                                }
+                              }}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <p className="text-sm text-red-500">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
-                </FormItem>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="full_name"
@@ -163,8 +177,6 @@ const EditProfile = () => {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
                   name="password"
@@ -178,6 +190,8 @@ const EditProfile = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="w-full sm:w-[48%]">
                 <FormField
                   control={form.control}
                   name="alamat"

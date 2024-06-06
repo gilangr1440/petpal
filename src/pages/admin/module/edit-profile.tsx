@@ -1,20 +1,20 @@
 import Layout from "@/components/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { editUserSchema } from "@/utils/apis/user/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import { CameraIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+import { useAuth } from "@/utils/contexts/auth";
+import { AdminFormValues, editAdmin, editAdminSchema } from "@/utils/apis/admin";
+import { Camera } from "lucide-react";
 
 type coordinateType = {
   lat: number;
@@ -24,6 +24,11 @@ type coordinateType = {
 const EditProfileAdmin = () => {
   const [map, setMap] = useState<any>(null);
   const [coords, setCoords] = useState<coordinateType>({ lat: 0, lng: 0 });
+  const { admin } = useAuth();
+  const splitAddress = admin.address?.split(",");
+  const latitude = splitAddress && splitAddress[splitAddress.length - 2];
+  const longitude = splitAddress && splitAddress[splitAddress.length - 1];
+  const alamatSlice = splitAddress?.splice(0, splitAddress.length - 2).toString();
 
   useEffect(() => {
     if (!map) return;
@@ -40,36 +45,46 @@ const EditProfileAdmin = () => {
     iconSize: [38, 38],
   });
 
-  const form = useForm<z.infer<typeof editUserSchema>>({
-    resolver: zodResolver(editUserSchema),
+  const form = useForm<AdminFormValues>({
+    resolver: zodResolver(editAdminSchema),
     defaultValues: {
-      fullname: "",
+      full_name: "",
       email: "",
       alamat: "",
       koordinat: "",
-      phone: "",
+      number_phone: "",
     },
   });
 
   useEffect(() => {
     form.setValue("koordinat", `${lat?.toFixed(3)}, ${lng?.toFixed(3)}` as string);
-  }, [lat, lng]);
-
-  const inputElementWatch = form.watch(["profile_picture"]);
+    form.setValue("full_name", admin.full_name as string);
+    form.setValue("email", admin.email as string);
+    form.setValue("alamat", alamatSlice as string);
+    form.setValue("number_phone", admin.number_phone as string);
+  }, [lat, lng, admin.full_name, admin.email, admin.number_phone]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
-  useEffect(() => {
+  const handleImageChange = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewUrl(reader.result);
+      setPreviewUrl(reader.result as string);
     };
+    reader.readAsDataURL(file);
+  };
 
-    if (inputElementWatch && inputElementWatch[0]) reader.readAsDataURL(inputElementWatch[0][0]);
-  }, [inputElementWatch]);
-
-  function onSubmit(values: z.infer<typeof editUserSchema>) {
+  async function onSubmit(values: AdminFormValues) {
+    if (values.koordinat == "0.000, 0.000") {
+      values.koordinat = `${latitude}, ${longitude}`;
+    }
     console.log(values);
+    try {
+      const result = await editAdmin(values);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -81,13 +96,15 @@ const EditProfileAdmin = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <label htmlFor="upload">
-            <CameraIcon className="absolute right-0 bottom-0 hover:text-blue-300 cursor-pointer" size={40} />
+            <div className="absolute bottom-0 right-0 bg-white hover:bg-gray-300 p-2 cursor-pointer rounded-full">
+              <Camera size={40} />
+            </div>
           </label>
-          <p className="text-sm text-red-500 absolute">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
+          <p className="text-sm text-red-500">{Boolean(form.formState.errors["profile_picture"]?.message) && form.formState.errors.profile_picture?.message?.toString()}</p>
         </div>
         <div>
-          <h1 className="text-3xl font-bold">John Doe</h1>
-          <h1 className="font-semibold">johndoe@mail.com</h1>
+          <h1 className="text-3xl font-bold">{admin.full_name}</h1>
+          <h1 className="font-semibold">{admin.email}</h1>
         </div>
       </div>
 
@@ -96,10 +113,39 @@ const EditProfileAdmin = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-wrap w-4/5 sm:justify-between mx-auto">
               <div className="w-full sm:w-[48%]">
-                <input type="file" id="upload" hidden {...form.register("profile_picture")} />
                 <FormField
                   control={form.control}
-                  name="fullname"
+                  name="profile_picture"
+                  render={() => (
+                    <FormItem className="mb-4 hidden">
+                      <FormLabel>Profile Picture</FormLabel>
+                      <FormControl>
+                        <Controller
+                          name="profile_picture"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              id="upload"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  field.onChange(file);
+                                  handleImageChange(file);
+                                }
+                              }}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="full_name"
                   render={({ field }) => (
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
@@ -180,10 +226,10 @@ const EditProfileAdmin = () => {
                       </Dialog>
                       <div className="flex gap-3">
                         <h1>
-                          <b>latitude</b>: {lat?.toFixed(3)}
+                          <b>latitude</b>: {latitude}
                         </h1>
                         <h1>
-                          <b>longitude</b>: {lng?.toFixed(3)}
+                          <b>longitude</b>: {longitude}
                         </h1>
                       </div>
                       <FormControl>
@@ -195,10 +241,10 @@ const EditProfileAdmin = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="number_phone"
                   render={({ field }) => (
                     <FormItem className="mb-4">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
                         <Input type="text" placeholder="0898369234" {...field} />
                       </FormControl>
@@ -206,15 +252,15 @@ const EditProfileAdmin = () => {
                     </FormItem>
                   )}
                 />
-                <div className="flex gap-3 justify-end">
-                  <Button type="button" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
-                    Add New Doctor
-                  </Button>
-                  <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
-                    Edit Profile
-                  </Button>
-                </div>
               </div>
+            </div>
+            <div className="flex gap-3 w-4/5 justify-end mx-auto">
+              <Button type="button" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+                Add New Doctor
+              </Button>
+              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+                Edit Profile
+              </Button>
             </div>
           </form>
         </Form>
