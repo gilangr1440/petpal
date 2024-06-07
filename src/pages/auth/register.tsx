@@ -15,6 +15,7 @@ import { useState } from "react";
 import { adminRegister, userRegister } from "@/utils/apis/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const { toast } = useToast();
@@ -107,7 +108,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input id="full_name" placeholder="Your Name" {...field} />
+                            <Input id="full_name" placeholder="Your Name" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -120,7 +121,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input id="email" placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -133,14 +134,26 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input id="password" type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" id="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
-                      Sign Up
+                    <Button
+                      type="submit"
+                      id="submit"
+                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
+                      disabled={form.formState.isSubmitting}
+                      aria-disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? (
+                        <p className="flex items-center justify-center gap-x-3 text-sm">
+                          <Loader2 className={"animate-spin text-xl "} /> Please wait
+                        </p>
+                      ) : (
+                        "Sign Up"
+                      )}
                     </Button>
                   </form>
                 </Form>
@@ -156,7 +169,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input id="full_name" placeholder="Your Name" {...field} />
+                            <Input id="full_name" placeholder="Your Name" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -169,7 +182,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input id="email" placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -182,14 +195,26 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input id="password" type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" id="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
-                      Sign Up
+                    <Button
+                      type="submit"
+                      id="submit"
+                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
+                      disabled={form.formState.isSubmitting}
+                      aria-disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? (
+                        <p className="flex items-center justify-center gap-x-3 text-sm">
+                          <Loader2 className={"animate-spin text-xl "} /> Please wait
+                        </p>
+                      ) : (
+                        "Sign Up"
+                      )}
                     </Button>
                   </form>
                 </Form>

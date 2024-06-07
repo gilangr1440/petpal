@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { addProduct, editProduct, getProductDetail } from "@/utils/apis/products";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Loader2 } from "lucide-react";
 
 const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
   const { toast } = useToast();
@@ -24,6 +25,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [detail, setDetail] = useState<Partial<IProductDetail>>({});
+  const buttonTitle = paramValue == "edit" ? "Edit" : "Add";
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -155,7 +157,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <Input id="product_name" placeholder="Enter product name" {...field} />
+                      <Input id="product_name" placeholder="Enter product name" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +170,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                      <Input id="price" type="text" placeholder="Enter price" {...field} />
+                      <Input id="price" type="text" placeholder="Enter price" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +183,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Stock</FormLabel>
                     <FormControl>
-                      <Input id="stock" type="text" placeholder="Enter stock" {...field} />
+                      <Input id="stock" type="text" placeholder="Enter stock" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -194,15 +196,21 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input id="description" type="textarea" placeholder="Enter description" {...field} />
+                      <Input id="description" type="textarea" placeholder="Enter description" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="flex items-center justify-start gap-x-4">
-                <Button type="submit" id="submit" className="mt-4">
-                  {paramValue == "add" ? "Add" : paramValue == "edit" ? "Edit" : ""}
+                <Button type="submit" id="submit" className="mt-4" disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting}>
+                  {hookForm.formState.isSubmitting ? (
+                    <p className="flex items-center justify-center gap-x-3 text-sm">
+                      <Loader2 className={"animate-spin text-xl "} /> Please wait
+                    </p>
+                  ) : (
+                    buttonTitle
+                  )}
                 </Button>
               </div>
             </div>

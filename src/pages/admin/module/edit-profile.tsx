@@ -14,7 +14,7 @@ import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import { useAuth } from "@/utils/contexts/auth";
 import { AdminFormValues, editAdmin, editAdminSchema } from "@/utils/apis/admin";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -40,10 +40,32 @@ const EditProfileAdmin = () => {
   const arrService = [];
 
   for (const [key, value] of Object.entries(available)) {
-    if (value) arrAvailable.push(key);
+    if (value) {
+      if (key == "monday") {
+        arrAvailable.push("Monday");
+      } else if (key == "tuesday") {
+        arrAvailable.push("Tuesday");
+      } else if (key == "wednesday") {
+        arrAvailable.push("Wednesday");
+      } else if (key == "thursday") {
+        arrAvailable.push("Thursday");
+      } else if (key == "friday") {
+        arrAvailable.push("Friday");
+      }
+    }
   }
   for (const [key, value] of Object.entries(services)) {
-    if (value) arrService.push(key);
+    if (value) {
+      if (key == "vaccinations") {
+        arrService.push("Vaccinations");
+      } else if (key == "operations") {
+        arrService.push("Operations");
+      } else if (key == "mcu") {
+        arrService.push("Medical Check-up");
+      } else if (key == "online_consultations") {
+        arrService.push("Online Consultations");
+      }
+    }
   }
 
   useEffect(() => {
@@ -74,11 +96,11 @@ const EditProfileAdmin = () => {
   });
 
   useEffect(() => {
-    form.setValue("coordinate", coor ? coor : (admin.coordinate as string));
-    form.setValue("full_name", admin.full_name as string);
-    form.setValue("email", admin.email as string);
-    form.setValue("address", admin.address as string);
-    form.setValue("number_phone", admin.number_phone as string);
+    form.setValue("coordinate", coor ? coor : (admin?.coordinate as string));
+    form.setValue("full_name", admin?.full_name as string);
+    form.setValue("email", admin?.email as string);
+    form.setValue("address", admin?.address as string);
+    form.setValue("number_phone", admin?.number_phone as string);
   }, [lat, lng, admin?.full_name, admin?.email, admin?.number_phone, admin?.coordinate, admin?.address]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
@@ -99,7 +121,10 @@ const EditProfileAdmin = () => {
         title: `${result.message}`,
       });
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `Something went wrong`,
+      });
     }
   }
 
@@ -110,7 +135,10 @@ const EditProfileAdmin = () => {
       setAvailable(result.data.available_days);
       setServices(result.data.service);
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `Something went wrong`,
+      });
     }
   };
 
@@ -182,7 +210,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input id="full_name" placeholder="Your Name" {...field} />
+                        <Input id="full_name" placeholder="Your Name" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -195,7 +223,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input id="email" placeholder="youremail@mail.com" {...field} />
+                        <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -208,7 +236,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input id="password" type="password" placeholder="******" {...field} />
+                        <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -223,7 +251,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input id="address" placeholder="Your Address" {...field} />
+                        <Input id="address" placeholder="Your Address" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -265,7 +293,7 @@ const EditProfileAdmin = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} />
+                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -278,7 +306,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input type="text" id="number_phone" placeholder="0898369234" {...field} />
+                        <Input type="text" id="number_phone" placeholder="0898369234" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -290,8 +318,14 @@ const EditProfileAdmin = () => {
               <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80 ${dataDokter.id && "hidden"}`}>
                 Add New Doctor
               </Button>
-              <Button type="submit" id="edit-profile" className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80`}>
-                Edit Profile
+              <Button type="submit" id="edit-profile" className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80`} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? (
+                  <p className="flex items-center justify-center gap-x-3 text-sm">
+                    <Loader2 className={"animate-spin text-xl "} /> Please wait
+                  </p>
+                ) : (
+                  "Edit Profile"
+                )}
               </Button>
             </div>
           </form>

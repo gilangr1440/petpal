@@ -16,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/utils/contexts/auth";
 import { useCookies } from "react-cookie";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const { toast } = useToast();
@@ -36,6 +37,7 @@ const Login = () => {
     if (role == "user") {
       try {
         const result = await userLogin(values);
+        // console.log(result);
         if (result.message == "Login successful! You are now logged in.") {
           changeToken(result.data.token);
           setCookie("token", result.data.token, { path: "/" });
@@ -60,6 +62,7 @@ const Login = () => {
     } else if (role == "admin") {
       try {
         const result = await adminLogin(values);
+        // console.log(result);
         if (result.message == "login successfull") {
           changeToken(result.data.token);
           setCookie("token", result.data.token, { path: "/" });
@@ -72,7 +75,7 @@ const Login = () => {
           setTimeout(() => {
             navigate("/");
           }, 2000);
-        } else if (result.message == "login gagal: email atau password tidak sesuai") {
+        } else if (result.message == "login failed: email atau password tidak sesuai") {
           toast({
             variant: "destructive",
             title: "Wrong email or password!",
@@ -122,7 +125,7 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input id="email" placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -135,14 +138,25 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input id="password" type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
-                      Sign In
+                    <Button
+                      type="submit"
+                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
+                      disabled={form.formState.isSubmitting}
+                      aria-disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? (
+                        <p className="flex items-center justify-center gap-x-3 text-sm">
+                          <Loader2 className={"animate-spin text-xl "} /> Please wait
+                        </p>
+                      ) : (
+                        "Sign In"
+                      )}
                     </Button>
                   </form>
                 </Form>
@@ -158,7 +172,7 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input id="email" placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -171,14 +185,25 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input id="password" type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
-                      Sign In
+                    <Button
+                      type="submit"
+                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
+                      disabled={form.formState.isSubmitting}
+                      aria-disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting ? (
+                        <p className="flex items-center justify-center gap-x-3 text-sm">
+                          <Loader2 className={"animate-spin text-xl "} /> Please wait
+                        </p>
+                      ) : (
+                        "Sign In"
+                      )}
                     </Button>
                   </form>
                 </Form>

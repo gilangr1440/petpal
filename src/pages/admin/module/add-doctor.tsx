@@ -4,13 +4,14 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AvailableDays, DoctorFormValues, DoctorFormattedData, Services, addDoctor, doctorSchema, getDoctor } from "@/utils/apis/doctor";
+import { AvailableDays, DoctorFormValues, DoctorFormattedData, Services, addDoctor, doctorSchema, editDoctor, getDoctor } from "@/utils/apis/doctor";
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const AddDoctor = () => {
   const { toast } = useToast();
@@ -23,6 +24,7 @@ const AddDoctor = () => {
   const [service, setService] = useState<Services[]>([]);
   const arrAvailable: string[] = [];
   const arrService: string[] = [];
+  const buttonTitle = paramValue == "edit" ? "Edit" : "Add";
 
   for (const [key, value] of Object.entries(available)) {
     if (value) arrAvailable.push(key);
@@ -91,14 +93,18 @@ const AddDoctor = () => {
       id: "mcu",
       label: "Medical Check-up",
     },
+    {
+      id: "online_consultations",
+      label: "Online Consultations",
+    },
   ] as const;
 
   useEffect(() => {
     if (paramValue == "edit") {
       getDataDoctor();
-      hookForm.setValue("full_name", dataDokter.full_name as string);
-      hookForm.setValue("about", dataDokter.about as string);
-      hookForm.setValue("price", dataDokter.price as string);
+      hookForm.setValue("full_name", dataDokter?.full_name as string);
+      hookForm.setValue("about", dataDokter?.about as string);
+      hookForm.setValue("price", String(dataDokter?.price));
       hookForm.setValue("available_days", arrAvailable);
       hookForm.setValue("services", arrService);
     }
@@ -115,7 +121,6 @@ const AddDoctor = () => {
   };
 
   async function onSubmit(values: DoctorFormValues) {
-    console.log(values);
     const formattedData = {
       ...values,
       price: parseFloat(values.price as string),
@@ -130,23 +135,52 @@ const AddDoctor = () => {
         vaccinations: values.services.includes("vaccinations") ? true : false,
         operations: values.services.includes("operations") ? true : false,
         mcu: values.services.includes("mcu") ? true : false,
+        online_consultations: values.services.includes("online_consultations") ? true : false,
       },
     };
 
-    console.log(formattedData);
-
-    try {
-      const result = await addDoctor(formattedData);
-      console.log(result);
-      toast({
-        variant: "success",
-        title: `Success add doctor`,
-      });
-      setTimeout(() => {
-        navigate("/admin/edit-profile");
-      }, 2000);
-    } catch (error) {
-      console.log(error);
+    if (paramValue == "edit") {
+      try {
+        const result = await editDoctor(formattedData);
+        if (result.message == "Update successful. Doctor's data has been updated.") {
+          toast({
+            variant: "success",
+            title: `${result.message}`,
+          });
+          setTimeout(() => {
+            navigate("/admin/edit-profile");
+          }, 2000);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: `Something went wrong`,
+        });
+      }
+    } else {
+      try {
+        const result = await addDoctor(formattedData);
+        console.log(result);
+        if (result.message == "Unable to add doctor. Please contact our support team.") {
+          toast({
+            variant: "destructive",
+            title: `${result.message}`,
+          });
+        } else if (result.message == "Doctor added successfully. Thank you.") {
+          toast({
+            variant: "success",
+            title: `${result.message}`,
+          });
+          setTimeout(() => {
+            navigate("/admin/edit-profile");
+          }, 2000);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: `Something went wrong`,
+        });
+      }
     }
   }
 
@@ -157,7 +191,10 @@ const AddDoctor = () => {
       setAvailable(result.data.available_days);
       setService(result.data.service);
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `${error}`,
+      });
     }
   };
 
@@ -213,7 +250,7 @@ const AddDoctor = () => {
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input id="full_name" placeholder="Doctor's name" {...field} />
+                        <Input id="full_name" placeholder="Doctor's name" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -226,7 +263,7 @@ const AddDoctor = () => {
                     <FormItem>
                       <FormLabel>About</FormLabel>
                       <FormControl>
-                        <Textarea id="about" placeholder="Tell us a little bit about the doctor" className="resize-none" {...field} />
+                        <Textarea id="about" placeholder="Tell us a little bit about the doctor" className="resize-none" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -239,7 +276,7 @@ const AddDoctor = () => {
                     <FormItem>
                       <FormLabel>Price</FormLabel>
                       <FormControl>
-                        <Input id="price" type="text" placeholder="Enter price" {...field} />
+                        <Input id="price" type="text" placeholder="Enter price" {...field} disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -315,8 +352,14 @@ const AddDoctor = () => {
                     </FormItem>
                   )}
                 />
-                <Button id="submit" type="submit">
-                  {paramValue == "edit" ? "Edit Doctor" : "Add Doctor"}
+                <Button id="submit" type="submit" disabled={hookForm.formState.isSubmitting} aria-disabled={hookForm.formState.isSubmitting}>
+                  {hookForm.formState.isSubmitting ? (
+                    <p className="flex items-center justify-center gap-x-3 text-sm">
+                      <Loader2 className={"animate-spin text-xl "} /> Please wait
+                    </p>
+                  ) : (
+                    buttonTitle
+                  )}
                 </Button>
               </form>
             </Form>
