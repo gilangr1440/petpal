@@ -8,7 +8,7 @@ export interface DoctorFormValues {
 }
 
 export interface DoctorFormattedData {
-  id: number | null;
+  id?: number | null;
   full_name: string;
   about: string;
   price: number | string;
@@ -23,6 +23,7 @@ export interface DoctorFormattedData {
     vaccinations: boolean;
     operations: boolean;
     mcu: boolean;
+    online_consultations: boolean;
   };
   profile_picture: File | null;
 }
@@ -39,4 +40,5 @@ export interface Services {
   vaccinations: boolean;
   operations: boolean;
   mcu: boolean;
+  online_consultations: boolean;
 }
