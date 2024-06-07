@@ -17,7 +17,7 @@ const DetailProductByAdmin = () => {
       const result = await getProductDetail(Number(id));
       setDetailProduct(result.data);
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 

@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { AvailableDays, DoctorFormattedData, Services, getDoctor } from "@/utils/apis/doctor";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 type coordinateType = {
   lat: number;
@@ -126,10 +128,7 @@ const EditProfileAdmin = () => {
         title: `${result.message}`,
       });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Something went wrong`,
-      });
+      return error;
     }
   }
 
@@ -137,14 +136,40 @@ const EditProfileAdmin = () => {
     try {
       const result = await getDoctor();
       setDataDokter(result.data);
-      setAvailable(result.data.available_days);
-      setServices(result.data.service);
+      setAvailable(result?.data?.available_days);
+      setServices(result?.data?.service);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Something went wrong`,
-      });
+      return error;
     }
+  };
+
+  const deleteDataDoctor = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`http://zyannstore.my.id/doctors`, { headers: { Authorization: `Bearer ${token}` } })
+          .then((res) => {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your product has been deleted.",
+              icon: "success",
+            });
+            setTimeout(() => {
+              navigate("/admin/edit-profile");
+            }, 2000);
+            return res;
+          })
+          .catch((err) => err);
+      }
+    });
   };
 
   useEffect(() => {
@@ -378,7 +403,7 @@ const EditProfileAdmin = () => {
               <Button type="button" id="edit-doctor" onClick={() => navigate("/admin/add-doctor?action=edit")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Edit Doctor
               </Button>
-              <Button type="submit" className="rounded-md bg-red-500 hover:bg-red-500/70">
+              <Button type="button" id="delete-doctor" onClick={() => deleteDataDoctor()} className="rounded-md bg-red-500 hover:bg-red-500/70">
                 Delete Doctor
               </Button>
             </div>

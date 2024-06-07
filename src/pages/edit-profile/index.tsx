@@ -84,7 +84,7 @@ const EditProfile = () => {
         title: `${result.message}`,
       });
     } catch (error) {
-      console.log(error);
+      return error;
     }
   }
 
@@ -257,7 +257,7 @@ const EditProfile = () => {
               </div>
             </div>
             <div className="flex flex-wrap w-4/5 sm:justify-end mx-auto">
-              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="submit" id="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 {form.formState.isSubmitting ? (
                   <p className="flex items-center justify-center gap-x-3 text-sm">
                     <Loader2 className={"animate-spin text-xl "} /> Please wait

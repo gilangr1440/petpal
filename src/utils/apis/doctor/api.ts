@@ -25,7 +25,7 @@ export const addDoctor = async (body: DoctorFormattedData) => {
     const response = await axiosWithConfig.post("http://zyannstore.my.id/doctors", formData);
     return response.data;
   } catch (error: any) {
-    console.log(error.response);
+    return error.response;
   }
 };
 
@@ -53,7 +53,7 @@ export const editDoctor = async (body: DoctorFormattedData) => {
     const response = await axiosWithConfig.patch("http://zyannstore.my.id/doctors", formData);
     return response.data;
   } catch (error: any) {
-    console.log(error.response);
+    return error.response;
   }
 };
 
@@ -62,6 +62,6 @@ export const getDoctor = async () => {
     const response = await axiosWithConfig.get("http://zyannstore.my.id/doctors");
     return response.data;
   } catch (error: any) {
-    console.log(error.response);
+    return error.response;
   }
 };

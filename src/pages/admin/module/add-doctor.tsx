@@ -177,15 +177,11 @@ const AddDoctor = () => {
           }, 2000);
         }
       } catch (error) {
-        toast({
-          variant: "destructive",
-          title: `Something went wrong`,
-        });
+        return error;
       }
     } else {
       try {
         const result = await addDoctor(formattedData);
-        console.log(result);
         if (result.message == "Unable to add doctor. Please contact our support team.") {
           toast({
             variant: "destructive",
@@ -201,10 +197,7 @@ const AddDoctor = () => {
           }, 2000);
         }
       } catch (error) {
-        toast({
-          variant: "destructive",
-          title: `Something went wrong`,
-        });
+        return error;
       }
     }
   }
@@ -216,10 +209,7 @@ const AddDoctor = () => {
       setAvailable(result.data.available_days);
       setService(result.data.service);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `${error}`,
-      });
+      return error;
     }
   };
 
