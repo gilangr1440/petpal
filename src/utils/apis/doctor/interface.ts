@@ -8,6 +8,7 @@ export interface DoctorFormValues {
 }
 
 export interface DoctorFormattedData {
+  id: number | null;
   full_name: string;
   about: string;
   price: number | string;

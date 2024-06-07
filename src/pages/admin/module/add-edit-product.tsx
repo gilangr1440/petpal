@@ -53,12 +53,12 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
   useEffect(() => {
     if (paramValue == "edit") {
       getDetail(Number(idProduct));
-      hookForm.setValue("product_name", String(detail.product_name));
-      hookForm.setValue("price", String(detail.price));
-      hookForm.setValue("stock", String(detail.stock));
-      hookForm.setValue("description", String(detail.description));
+      hookForm.setValue("product_name", String(detail?.product_name));
+      hookForm.setValue("price", String(detail?.price));
+      hookForm.setValue("stock", String(detail?.stock));
+      hookForm.setValue("description", String(detail?.description));
     }
-  }, [detail.product_name, detail.price, detail.stock, detail.description]);
+  }, [detail?.product_name, detail?.price, detail?.stock, detail?.description]);
 
   const onSubmit = async (data: ProductFormValues) => {
     const formattedData = {
@@ -201,7 +201,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                 )}
               />
               <div className="flex items-center justify-start gap-x-4">
-                <Button type="submit" className="mt-4">
+                <Button type="submit" id="submit" className="mt-4">
                   {paramValue == "add" ? "Add" : paramValue == "edit" ? "Edit" : ""}
                 </Button>
               </div>

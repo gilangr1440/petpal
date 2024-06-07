@@ -4,17 +4,32 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DoctorFormValues, addDoctor, doctorSchema } from "@/utils/apis/doctor";
-import { useState } from "react";
+import { AvailableDays, DoctorFormValues, DoctorFormattedData, Services, addDoctor, doctorSchema, getDoctor } from "@/utils/apis/doctor";
+import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AddDoctor = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const paramValue = queryParams.get("action");
+  const [dataDokter, setDataDokter] = useState<Partial<DoctorFormattedData>>({});
+  const [available, setAvailable] = useState<AvailableDays[]>([]);
+  const [service, setService] = useState<Services[]>([]);
+  const arrAvailable: string[] = [];
+  const arrService: string[] = [];
+
+  for (const [key, value] of Object.entries(available)) {
+    if (value) arrAvailable.push(key);
+  }
+  for (const [key, value] of Object.entries(service)) {
+    if (value) arrService.push(key);
+  }
 
   const form = useForm<DoctorFormValues>({
     resolver: zodResolver(doctorSchema),
@@ -26,6 +41,19 @@ const AddDoctor = () => {
       services: [],
     },
   });
+
+  const editForm = useForm<DoctorFormValues>({
+    resolver: zodResolver(doctorSchema),
+    defaultValues: {
+      full_name: "",
+      about: "",
+      price: "",
+      available_days: [],
+      services: [],
+    },
+  });
+
+  const hookForm = paramValue == "edit" ? editForm : form;
 
   const days = [
     {
@@ -64,6 +92,17 @@ const AddDoctor = () => {
       label: "Medical Check-up",
     },
   ] as const;
+
+  useEffect(() => {
+    if (paramValue == "edit") {
+      getDataDoctor();
+      hookForm.setValue("full_name", dataDokter.full_name as string);
+      hookForm.setValue("about", dataDokter.about as string);
+      hookForm.setValue("price", dataDokter.price as string);
+      hookForm.setValue("available_days", arrAvailable);
+      hookForm.setValue("services", arrService);
+    }
+  }, [dataDokter?.full_name, dataDokter?.about, dataDokter?.price]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
 
@@ -111,6 +150,17 @@ const AddDoctor = () => {
     }
   }
 
+  const getDataDoctor = async () => {
+    try {
+      const result = await getDoctor();
+      setDataDokter(result.data);
+      setAvailable(result.data.available_days);
+      setService(result.data.service);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Layout>
       <Toaster />
@@ -118,16 +168,16 @@ const AddDoctor = () => {
         <h1 className="text-2xl font-semibold">Add Doctor</h1>
         <div className="flex gap-5 w-full p-5 shadow-lg rounded-lg my-5">
           <div className="w-48 h-60 rounded-md shadow-lg">
-            <img src={`${previewUrl ? previewUrl : "/assets/placeholder-image.png"}`} className="w-full h-full object-cover rounded-md" />
+            <img src={`${previewUrl ? previewUrl : dataDokter?.profile_picture ? dataDokter?.profile_picture : "/assets/placeholder-image.png"}`} className="w-full h-full object-cover rounded-md" />
             <label htmlFor="upload">
               <div className="w-full p-1 rounded-md bg-slate-300 hover:bg-slate-200 text-center cursor-pointer my-3">Choose Picture</div>
             </label>
           </div>
           <div className="flex-grow">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-3/4">
+            <Form {...hookForm}>
+              <form onSubmit={hookForm.handleSubmit(onSubmit)} className="space-y-8 w-3/4">
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="profile_picture"
                   render={() => (
                     <FormItem className="mb-4 hidden">
@@ -135,7 +185,7 @@ const AddDoctor = () => {
                       <FormControl>
                         <Controller
                           name="profile_picture"
-                          control={form.control}
+                          control={hookForm.control}
                           render={({ field }) => (
                             <Input
                               type="file"
@@ -157,7 +207,7 @@ const AddDoctor = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="full_name"
                   render={({ field }) => (
                     <FormItem>
@@ -170,7 +220,7 @@ const AddDoctor = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="about"
                   render={({ field }) => (
                     <FormItem>
@@ -183,7 +233,7 @@ const AddDoctor = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="price"
                   render={({ field }) => (
                     <FormItem>
@@ -196,7 +246,7 @@ const AddDoctor = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="available_days"
                   render={() => (
                     <FormItem>
@@ -206,7 +256,7 @@ const AddDoctor = () => {
                       {days.map((item) => (
                         <FormField
                           key={item.id}
-                          control={form.control}
+                          control={hookForm.control}
                           name="available_days"
                           render={({ field }) => {
                             return (
@@ -231,7 +281,7 @@ const AddDoctor = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
+                  control={hookForm.control}
                   name="services"
                   render={() => (
                     <FormItem>
@@ -241,7 +291,7 @@ const AddDoctor = () => {
                       {services.map((item) => (
                         <FormField
                           key={item.id}
-                          control={form.control}
+                          control={hookForm.control}
                           name="services"
                           render={({ field }) => {
                             return (
@@ -265,7 +315,9 @@ const AddDoctor = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Add Doctor</Button>
+                <Button id="submit" type="submit">
+                  {paramValue == "edit" ? "Edit Doctor" : "Add Doctor"}
+                </Button>
               </form>
             </Form>
           </div>

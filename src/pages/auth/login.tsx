@@ -48,7 +48,7 @@ const Login = () => {
           setTimeout(() => {
             navigate("/");
           }, 2000);
-        } else if (result.message == "error login") {
+        } else if (result.message == "Invalid email or password. Please try again.") {
           toast({
             variant: "destructive",
             title: "Wrong email or password!",

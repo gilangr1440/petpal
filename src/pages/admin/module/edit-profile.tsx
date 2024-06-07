@@ -106,7 +106,6 @@ const EditProfileAdmin = () => {
   const getDataDoctor = async () => {
     try {
       const result = await getDoctor();
-      console.log(result);
       setDataDokter(result.data);
       setAvailable(result.data.available_days);
       setServices(result.data.service);
@@ -288,10 +287,10 @@ const EditProfileAdmin = () => {
               </div>
             </div>
             <div className="flex gap-3 w-4/5 justify-end mx-auto">
-              <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80 ${dataDokter.id && "hidden"}`}>
                 Add New Doctor
               </Button>
-              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="submit" id="edit-profile" className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80`}>
                 Edit Profile
               </Button>
             </div>
@@ -299,7 +298,7 @@ const EditProfileAdmin = () => {
         </Form>
       </div>
 
-      {dataDokter ? (
+      {dataDokter.id ? (
         <div className="w-4/5 mx-auto my-5 shadow-md rounded-lg p-5 sm:p-10 flex sm:justify-center md:gap-4 lg:gap-10 flex-wrap">
           <div className="md:w-[30%] lg:w-1/5 h-64">
             <img src={`${dataDokter.profile_picture}`} alt="doctor" className="w-full h-full object-cover rounded-md" />
@@ -337,14 +336,14 @@ const EditProfileAdmin = () => {
               </ul>
             </div>
             <div className="flex gap-3 justify-end">
-              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" id="edit-doctor" onClick={() => navigate("/admin/add-doctor?action=edit")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Edit Doctor
               </Button>
             </div>
           </div>
         </div>
       ) : (
-        <div>There is no doctor's data yet</div>
+        <h1 className="text-center">There is no doctor's data yet</h1>
       )}
     </Layout>
   );

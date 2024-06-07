@@ -5,9 +5,11 @@ import { useState } from "react";
 import SortProducts from "@/components/sort-product";
 import HomeProductList from "./home-product-list";
 import HomeClinicList from "./home-clinic-list";
+import { useCookies } from "react-cookie";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("petshop");
+  const [cookies, setCookie, removeCookie] = useCookies<any>(["token", "role"]);
 
   return (
     <Layout>
@@ -17,15 +19,20 @@ const Home = () => {
         </div>
       </section>
       <section className="relative container mx-auto h-full flex items-start justify-center flex-col gap-y-8 py-6">
-        <>
-          <header
-            className={`w-full flex flex-col sm:items-end gap-y-4 sm:flex-row sm:justify-between`}
-          >
-            <CategoryTabs onTabChange={setActiveTab} />
-            <SortProducts />
-          </header>
-          {activeTab === "petshop" ? <HomeProductList /> : <HomeClinicList />}
-        </>
+        {cookies.role == "user" ? (
+          <>
+            <header className={`w-full flex flex-col sm:items-end gap-y-4 sm:flex-row sm:justify-between`}>
+              <CategoryTabs onTabChange={setActiveTab} />
+              <SortProducts />
+            </header>
+            {activeTab === "petshop" ? <HomeProductList /> : <HomeClinicList />}
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold">My Products</h1>
+            <HomeProductList />
+          </>
+        )}
       </section>
     </Layout>
   );

@@ -45,7 +45,7 @@ export const addProduct = async (body: ProductFormValues) => {
 export const getProductsAdmin = async (page: number) => {
   try {
     const response = await axiosWithConfig.get(`/products?page=${page}`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;
