@@ -43,7 +43,7 @@ const Login = () => {
     if (role == "user") {
       try {
         const result = await userLogin(values);
-        if (result.message == "success login") {
+        if (result.message == "Login successful! You are now logged in.") {
           changeToken(result.data.token);
           setCookie("token", result.data.token, { path: "/" });
           setCookie("login_id", result.data.id, { path: "/" });
