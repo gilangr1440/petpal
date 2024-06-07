@@ -378,6 +378,9 @@ const EditProfileAdmin = () => {
               <Button type="button" id="edit-doctor" onClick={() => navigate("/admin/add-doctor?action=edit")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Edit Doctor
               </Button>
+              <Button type="submit" className="rounded-md bg-red-500 hover:bg-red-500/70">
+                Delete Doctor
+              </Button>
             </div>
           </div>
         </div>
