@@ -87,10 +87,10 @@ const Navbar = () => {
                 <DropdownMenuItem>Chat</DropdownMenuItem>
               </NavLink>
               <NavLink to={"/admin/service-requests"}>
-                <DropdownMenuItem>Service Request</DropdownMenuItem>
+                <DropdownMenuItem>Request List</DropdownMenuItem>
               </NavLink>
               <NavLink to={"/admin/sales"}>
-                <DropdownMenuItem>Sales</DropdownMenuItem>
+                <DropdownMenuItem>Sales List</DropdownMenuItem>
               </NavLink>
               <DropdownMenuSeparator />
               <NavLink to={"/admin/edit-profile"}>
