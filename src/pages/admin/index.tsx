@@ -7,15 +7,18 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
 const Admin = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
   const navigate = useNavigate();
   const { token } = useAuth();
 
-  const fetchProductsAdmin = async () => {
+  const fetchProductsAdmin = async (page: number) => {
     try {
-      const result = await getProductsAdmin();
-      setProducts(result.data);
+      const result = await getProductsAdmin(page);
+      console.log(result);
+      setProducts(result.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -56,7 +59,7 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetchProductsAdmin();
+    fetchProductsAdmin(1);
   }, [products.length]);
 
   return (
@@ -74,6 +77,24 @@ const Admin = () => {
               <ProductsAdminCard key={index} title={data.product_name} cost={data.price} img={data.product_picture} onClick={() => handleDetail(data.id)} onEdit={() => handleEdit(data.id)} onDelete={() => handleDelete(data.id)} />
             ))}
         </main>
+        <div className="my-10">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">1</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
     </Layout>
   );

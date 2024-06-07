@@ -62,7 +62,7 @@ const DetailDoctor = () => {
                     render={({ field }) => (
                       <FormItem className="space-y-3">
                         <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 mb-5">
+                          <RadioGroup id="day" onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 mb-5">
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
                                 <RadioGroupItem value="Senin" />

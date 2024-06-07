@@ -1,5 +1,6 @@
 import { doctorSchema } from "./scheme";
-import { DoctorFormValues } from "./interface";
+import { DoctorFormValues, DoctorFormattedData, AvailableDays, Services } from "./interface";
+import { addDoctor, getDoctor } from "./api";
 
-export type { DoctorFormValues };
-export { doctorSchema };
+export type { DoctorFormValues, DoctorFormattedData, AvailableDays, Services };
+export { doctorSchema, addDoctor, getDoctor };

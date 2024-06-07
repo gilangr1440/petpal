@@ -7,8 +7,8 @@ export const editAdminSchema = z.object({
   full_name: z.string().min(1, { message: "Name is required" }),
   email: z.string().email().min(1, { message: "Email is required" }),
   password: z.string().min(6, { message: "Password must be at least 6" }).optional(),
-  alamat: z.string().min(1, { message: "Address is required" }),
-  koordinat: z.string().min(1, { message: "Koordinat is required" }),
+  address: z.string().min(1, { message: "Address is required" }),
+  coordinate: z.string().min(1, { message: "Koordinat is required" }),
   number_phone: z.string().min(8, { message: "Phone must be at least 8" }),
   profile_picture: z
     .instanceof(File)
@@ -22,6 +22,8 @@ export type AdminType = {
   email?: string;
   number_phone?: string;
   address?: string;
+  coordinate?: string;
+  role?: string;
   profile_picture?: string;
 };
 
@@ -29,8 +31,8 @@ export interface AdminFormValues {
   full_name: string;
   email: string;
   password: string | undefined;
-  alamat: string;
-  koordinat: string;
+  address: string;
+  coordinate: string;
   number_phone: string;
   profile_picture: File | null;
 }
