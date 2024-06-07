@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import { Button } from "@/components/ui/button";
+import Loaders from "@/components/loaders";
 import {
   Table,
   TableBody,
@@ -13,75 +13,75 @@ import { useEffect, useState } from "react";
 
 const ServiceRequests = () => {
   const [data, setData] = useState<any[]>([]);
-  const [doctorProfile, setDoctorProfile] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await axiosWithConfig.get(
-        "http://zyannstore.my.id/consultations"
+        `${import.meta.env.VITE_BASE_URL}/consultations`
       );
       setData(response.data.data);
-      setDoctorProfile(response.data.data[0]);
     } catch (error: any) {
       console.error(error);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     getData();
   }, []);
-  console.log(data);
 
   return (
     <Layout>
-      <div className="container mx-auto h-full py-20 flex items-start justify-start flex-col gap-y-4">
-        {doctorProfile && (
-          <figure className="flex items-center justify-center flex-col gap-x-4 mx-auto lg:items-start lg:justify-start lg:flex-row lg:mx-0">
-            <div>
-              <img
-                src={doctorProfile.doctor_profile_picture}
-                alt={doctorProfile.doctor_fullname}
-                className="w-[100px] h-[100px] ring-2 rounded-full"
-              />
-            </div>
-            <div className="flex items-center justify-center flex-col lg:items-start lg:justify-start">
-              <h1 className="text-lg font-semibold">
-                {doctorProfile.doctor_fullname}
-              </h1>
-              <p>Bogor, Available on weekdays</p>
-              <Button className="mt-1">Edit Profile</Button>
-            </div>
-          </figure>
+      <div className="relative container mx-auto min-h-[calc(100vh-68px-232px)] py-10 flex items-start justify-start flex-col gap-y-4">
+        {loading ? (
+          <Loaders className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" />
+        ) : (
+          <>
+            <header className="mt-8">
+              <h1 className="text-xl font-semibold">List Service Request</h1>
+            </header>
+            {data == null ? (
+              <div className="w-full flex flex-col items-center justify-center">
+                <img src="/public/assets/data-not-dound.png" alt="" />
+                <h1 className="text-xl font-semibold">
+                  You don't have Service Request
+                </h1>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[60px]">No</TableHead>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>Service Nama</TableHead>
+                    <TableHead>Transaction Status</TableHead>
+                    <TableHead>Status Consultation</TableHead>
+                    <TableHead>Tanggal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.map((item, index) => (
+                    <TableRow
+                      key={item.ID}
+                      onClick={() => console.log("Hello World!")}
+                    >
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>{item.UserDetails.full_name}</TableCell>
+                      <TableCell>{item.Consultation}</TableCell>
+                      <TableCell>{item.TransactionStatus}</TableCell>
+                      <TableCell>{item.StatusConsultation}</TableCell>
+                      <TableCell>
+                        {new Date(item.CreatedAt).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
         )}
-        <header className="mt-8">
-          <h1 className="text-xl font-semibold">List Service Request</h1>
-        </header>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[60px]">No</TableHead>
-              <TableHead>Nama</TableHead>
-              <TableHead>Service Nama</TableHead>
-              <TableHead>Jenis</TableHead>
-              <TableHead>Tanggal</TableHead>
-              <TableHead>Persetujuan</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{item.user_fullname}</TableCell>
-                <TableCell>{item.consultation}</TableCell>
-                <TableCell>{item.transaction_status}</TableCell>
-                <TableCell>
-                  {new Date(item.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{item.status_consultation}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
       </div>
     </Layout>
   );
