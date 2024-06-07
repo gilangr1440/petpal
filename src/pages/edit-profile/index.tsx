@@ -152,7 +152,7 @@ const EditProfile = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" {...field} />
+                        <Input id="full_name" placeholder="Your Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -165,7 +165,7 @@ const EditProfile = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="youremail@mail.com" {...field} />
+                        <Input id="email" placeholder="youremail@mail.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -178,7 +178,7 @@ const EditProfile = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="******" {...field} />
+                        <Input id="password" type="password" placeholder="******" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,7 +193,7 @@ const EditProfile = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Address" {...field} />
+                        <Input id="address" placeholder="Your Address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -235,7 +235,7 @@ const EditProfile = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="text" placeholder="Your Address Koordinat" className="hidden" {...field} />
+                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -248,7 +248,7 @@ const EditProfile = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input type="text" placeholder="0898369234" {...field} />
+                        <Input id="number_phone" type="text" placeholder="0898369234" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -183,7 +183,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Name" {...field} />
+                        <Input id="full_name" placeholder="Your Name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -196,7 +196,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="youremail@mail.com" {...field} />
+                        <Input id="email" placeholder="youremail@mail.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -209,7 +209,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="******" {...field} />
+                        <Input id="password" type="password" placeholder="******" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -224,7 +224,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your Address" {...field} />
+                        <Input id="address" placeholder="Your Address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -266,7 +266,7 @@ const EditProfileAdmin = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="text" placeholder="Your Address Koordinat" className="hidden" {...field} />
+                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -279,7 +279,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input type="text" placeholder="0898369234" {...field} />
+                        <Input type="text" id="number_phone" placeholder="0898369234" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -288,7 +288,7 @@ const EditProfileAdmin = () => {
               </div>
             </div>
             <div className="flex gap-3 w-4/5 justify-end mx-auto">
-              <Button type="button" onClick={() => navigate("/admin/add-doctor")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Add New Doctor
               </Button>
               <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">

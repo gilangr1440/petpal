@@ -109,7 +109,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your Name" {...field} />
+                            <Input id="full_name" placeholder="Your Name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -122,7 +122,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -135,7 +135,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -158,7 +158,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Full Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Your Name" {...field} />
+                            <Input id="full_name" placeholder="Your Name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -171,7 +171,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="youremail@mail.com" {...field} />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -184,7 +184,7 @@ const Register = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input type="password" placeholder="******" {...field} />
+                            <Input id="password" type="password" placeholder="******" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

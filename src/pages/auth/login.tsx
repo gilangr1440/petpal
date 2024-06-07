@@ -3,14 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import registerImage from "/assets/auth-image.png";
@@ -79,9 +72,7 @@ const Login = () => {
           setTimeout(() => {
             navigate("/");
           }, 2000);
-        } else if (
-          result.message == "login gagal: email atau password tidak sesuai"
-        ) {
+        } else if (result.message == "login gagal: email atau password tidak sesuai") {
           toast({
             variant: "destructive",
             title: "Wrong email or password!",
@@ -111,10 +102,7 @@ const Login = () => {
             <img src={logoImage} alt="PetPal" className="w-72 mx-auto" />
           </Link>
           <div className="w-4/5 flex justify-center mx-auto">
-            <Tabs
-              defaultValue="user"
-              className="w-full flex flex-col items-center"
-            >
+            <Tabs defaultValue="user" className="w-full flex flex-col items-center">
               <TabsList>
                 <TabsTrigger value="user" onClick={() => roleHandle("user")}>
                   User
@@ -124,14 +112,9 @@ const Login = () => {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="user">
-                <h1 className="text-2xl font-semibold text-center my-5">
-                  Sign In
-                </h1>
+                <h1 className="text-2xl font-semibold text-center my-5">Sign In</h1>
                 <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                       control={form.control}
                       name="email"
@@ -139,10 +122,7 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="youremail@mail.com"
-                              {...field}
-                            />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -155,34 +135,22 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="******"
-                              {...field}
-                            />
+                            <Input id="password" type="password" placeholder="******" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button
-                      type="submit"
-                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
-                    >
+                    <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
                       Sign In
                     </Button>
                   </form>
                 </Form>
               </TabsContent>
               <TabsContent value="admin">
-                <h1 className="text-2xl font-semibold text-center my-5">
-                  Sign In
-                </h1>
+                <h1 className="text-2xl font-semibold text-center my-5">Sign In</h1>
                 <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                       control={form.control}
                       name="email"
@@ -190,10 +158,7 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="youremail@mail.com"
-                              {...field}
-                            />
+                            <Input id="email" placeholder="youremail@mail.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -206,20 +171,13 @@ const Login = () => {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="******"
-                              {...field}
-                            />
+                            <Input id="password" type="password" placeholder="******" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button
-                      type="submit"
-                      className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
-                    >
+                    <Button type="submit" className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90">
                       Sign In
                     </Button>
                   </form>
@@ -231,21 +189,14 @@ const Login = () => {
           <div className="w-4/5 mx-auto">
             <h1 className="text-center my-5">
               Don’t have an account?{" "}
-              <Link
-                to={"/register"}
-                className="text-[#036DA1] hover:text-[#64A1B7]"
-              >
+              <Link to={"/register"} className="text-[#036DA1] hover:text-[#64A1B7]">
                 Sign Up
               </Link>
             </h1>
           </div>
         </div>
         <div className="w-1/2 relative hidden sm:block">
-          <img
-            src={registerImage}
-            alt="register"
-            className="w-[40vw] absolute hidden sm:block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
+          <img src={registerImage} alt="register" className="w-[40vw] absolute hidden sm:block top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
     </main>

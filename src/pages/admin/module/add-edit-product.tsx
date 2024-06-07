@@ -129,6 +129,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                         render={({ field }) => (
                           <Input
                             type="file"
+                            id="product_picture"
                             accept="image/*"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
@@ -154,7 +155,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter product name" {...field} />
+                      <Input id="product_name" placeholder="Enter product name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -167,7 +168,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Enter price" {...field} />
+                      <Input id="price" type="text" placeholder="Enter price" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -180,7 +181,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Stock</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="Enter stock" {...field} />
+                      <Input id="stock" type="text" placeholder="Enter stock" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -193,7 +194,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input type="textarea" placeholder="Enter description" {...field} />
+                      <Input id="description" type="textarea" placeholder="Enter description" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
