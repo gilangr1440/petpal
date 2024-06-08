@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import axiosWithConfig from "../axiosWithConfig";
 
 export const getChatMessages = async (chatId: number) => {
@@ -7,7 +8,10 @@ export const getChatMessages = async (chatId: number) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error fetching chat messages:", error);
+    toast({
+      variant: "destructive",
+      title: `Error fetching chat messages: ${error}`,
+    });
     return [];
   }
 };
@@ -20,7 +24,10 @@ export const postChatMessage = async (chatId: number, message: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error sending chat message:", error);
+    toast({
+      variant: "destructive",
+      title: `Error fetching chat messages: ${error}`,
+    });
     return null;
   }
 };
