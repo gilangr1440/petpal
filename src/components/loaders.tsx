@@ -1,13 +1,19 @@
 interface ILoadersProps {
-  className: string;
+  className?: string;
+  width?: string;
+  height?: string;
 }
 
-const Loaders = ({ className }: ILoadersProps) => {
+const Loaders = ({
+  className,
+  width = "w-20",
+  height = "h-20",
+}: ILoadersProps) => {
   return (
     <div role="status" className={`${className}`}>
       <svg
         aria-hidden="true"
-        className="w-20 h-20 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        className={`${width} ${height} text-gray-200 animate-spin dark:text-gray-600 fill-blue-600`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

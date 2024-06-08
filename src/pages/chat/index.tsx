@@ -8,13 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCookies } from "react-cookie";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { Link } from "react-router-dom";
-import { buttonVariants } from "@/components/ui/button";
+import EmptyChat from "./empty-chat";
 
 interface IConsultation {
   ID: number;
-  UserDetails: User[];
-  DoctorDetails: Doctor[];
+  UserDetails: User;
+  DoctorDetails: Doctor;
   Consultation: string;
   TransactionStatus: string;
   StatusConsultation: string;
@@ -51,14 +50,16 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const pendingTransactions = roomChat.filter(
-      (item) => item.TransactionStatus.toLowerCase() === "pending"
-    );
-    if (pendingTransactions.length > 0) {
-      toast({
-        variant: "destructive",
-        title: "You have transaction should be paid",
-      });
+    if (roomChat) {
+      const pendingTransactions = roomChat.filter(
+        (item) => item.TransactionStatus.toLowerCase() === "pending"
+      );
+      if (pendingTransactions.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "You have transaction should be paid",
+        });
+      }
     }
   }, [roomChat]);
 
@@ -66,41 +67,17 @@ const Chat = () => {
     setSelectedRoomChatId(id);
   };
 
-  const paidTransaction = roomChat.filter(
-    (item) => item.TransactionStatus.toLowerCase() === "paid"
-  );
+  const paidTransaction =
+    roomChat &&
+    roomChat.filter((item) => item.TransactionStatus.toLowerCase() === "paid");
 
-  const handleEmptyChat = () => {
-    if (role == "user") {
-      return (
-        <div className="w-full h-[calc(100vh-68px)] flex flex-col items-center justify-center">
-          <img src="/public/assets/data-not-dound.png" alt="" />
-          <h1 className="text-xl font-semibold">You dont have conversation</h1>
-          <Link
-            to={"/clinic-lists"}
-            className={`${buttonVariants({ variant: "default" })} mt-5`}
-          >
-            See Doctor
-          </Link>
-        </div>
-      );
-    } else if (role == "admin") {
-      return (
-        <div className="w-full h-[calc(100vh-68px)] flex flex-col items-center justify-center">
-          <img src="/public/assets/data-not-dound.png" alt="" />
-          <h1 className="text-xl font-semibold">You dont have conversation</h1>
-        </div>
-      );
-    }
-  };
-
-  console.log(roomChat);
+  const haveAConvertation = paidTransaction && paidTransaction.length > 0;
 
   return (
     <>
       <Navbar />
       <Toaster />
-      {paidTransaction.length > 0 ? (
+      {haveAConvertation ? (
         <div className="h-[calc(100vh-68px)] flex items-start justify-start">
           <div
             className={`max-w-[300px] w-full h-full ${
@@ -116,9 +93,8 @@ const Chat = () => {
                 <Avatar className="w-10 h-10">
                   <AvatarImage
                     src={
-                      item[
-                        role === "admin" ? "UserDetails" : "DoctorDetails"
-                      ][0].profile_picture
+                      item[role === "admin" ? "UserDetails" : "DoctorDetails"]
+                        .profile_picture
                     }
                     className="w-full h-full object-cover rounded-full"
                   />
@@ -126,8 +102,8 @@ const Chat = () => {
                 </Avatar>
                 <h1 className="text-white">
                   {role === "admin"
-                    ? item.UserDetails[0].full_name
-                    : item.DoctorDetails[0].full_name}
+                    ? item.UserDetails.full_name
+                    : item.DoctorDetails.full_name}
                 </h1>
               </div>
             ))}
@@ -135,7 +111,7 @@ const Chat = () => {
           {selectedRoomChatId && <RoomChat roomChatId={selectedRoomChatId} />}
         </div>
       ) : (
-        handleEmptyChat()
+        <EmptyChat role={role} />
       )}
     </>
   );
