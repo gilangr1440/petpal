@@ -48,7 +48,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
       const result = await getProductDetail(id);
       setDetail(result.data);
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -82,7 +82,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
         }, 2000);
         console.log(result);
       } catch (error) {
-        console.log(error);
+        return error;
       }
     } else if (paramValue == "edit") {
       try {
@@ -96,7 +96,7 @@ const AddEditProducts: React.FC<ProductFormProps> = ({ defaultValues }) => {
         }, 2000);
         console.log(result);
       } catch (error) {
-        console.log(error);
+        return error;
       }
     }
   };

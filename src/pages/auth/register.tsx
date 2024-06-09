@@ -50,7 +50,7 @@ const Register = () => {
           });
         }
       } catch (error: any) {
-        console.log(error);
+        return error;
       }
     } else if (role == "admin") {
       try {
@@ -70,7 +70,7 @@ const Register = () => {
           });
         }
       } catch (error: any) {
-        console.log(error);
+        return error;
       }
     }
   };

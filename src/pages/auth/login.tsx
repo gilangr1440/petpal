@@ -37,7 +37,6 @@ const Login = () => {
     if (role == "user") {
       try {
         const result = await userLogin(values);
-        // console.log(result);
         if (result.message == "Login successful! You are now logged in.") {
           changeToken(result.data.token);
           setCookie("token", result.data.token, { path: "/" });
@@ -57,12 +56,11 @@ const Login = () => {
           });
         }
       } catch (error: any) {
-        console.log(error);
+        return error;
       }
     } else if (role == "admin") {
       try {
         const result = await adminLogin(values);
-        // console.log(result);
         if (result.message == "login successfull") {
           changeToken(result.data.token);
           setCookie("token", result.data.token, { path: "/" });
@@ -87,7 +85,7 @@ const Login = () => {
           });
         }
       } catch (error: any) {
-        console.log(error);
+        return error;
       }
     }
   };
@@ -146,6 +144,7 @@ const Login = () => {
                     />
                     <Button
                       type="submit"
+                      id="submit"
                       className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
                       disabled={form.formState.isSubmitting}
                       aria-disabled={form.formState.isSubmitting}
@@ -193,6 +192,7 @@ const Login = () => {
                     />
                     <Button
                       type="submit"
+                      id="submit"
                       className="w-full rounded-full bg-gradient-to-r from-[#036DA1] via-[#64A1B7] to-[#C6D6CE] hover:from-[#036DA1]/90 hover:to-[#C6D6CE]/90"
                       disabled={form.formState.isSubmitting}
                       aria-disabled={form.formState.isSubmitting}
