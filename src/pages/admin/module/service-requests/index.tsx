@@ -68,7 +68,7 @@ const ServiceRequests = () => {
                         {item.transaction_status}
                       </TableCell>
                       <TableCell className="capitalize">
-                        {item.transaction_status}
+                        {item.consultation_status}
                       </TableCell>
                       <TableCell className="capitalize">
                         {item.scheduled_date}
