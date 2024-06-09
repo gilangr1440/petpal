@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -36,37 +36,42 @@ const EditProfileAdmin = () => {
   const { admin } = useAuth();
   const latitude = admin?.coordinate?.split(",")[0];
   const longitude = admin?.coordinate?.split(",")[1];
-  const arrAvailable = [];
-  const arrService = [];
-
-  for (const [key, value] of Object.entries(available)) {
-    if (value) {
-      if (key == "monday") {
-        arrAvailable.push("Monday");
-      } else if (key == "tuesday") {
-        arrAvailable.push("Tuesday");
-      } else if (key == "wednesday") {
-        arrAvailable.push("Wednesday");
-      } else if (key == "thursday") {
-        arrAvailable.push("Thursday");
-      } else if (key == "friday") {
-        arrAvailable.push("Friday");
+  const arrAvailable = useMemo(() => {
+    const arr = [];
+    for (const [key, value] of Object.entries(available)) {
+      if (value) {
+        if (key == "monday") {
+          arr.push("Monday");
+        } else if (key == "tuesday") {
+          arr.push("Tuesday");
+        } else if (key == "wednesday") {
+          arr.push("Wednesday");
+        } else if (key == "thursday") {
+          arr.push("Thursday");
+        } else if (key == "friday") {
+          arr.push("Friday");
+        }
       }
     }
-  }
-  for (const [key, value] of Object.entries(services)) {
-    if (value) {
-      if (key == "vaccinations") {
-        arrService.push("Vaccinations");
-      } else if (key == "operations") {
-        arrService.push("Operations");
-      } else if (key == "mcu") {
-        arrService.push("Medical Check-up");
-      } else if (key == "online_consultations") {
-        arrService.push("Online Consultations");
+    return arr;
+  }, [available]);
+  const arrService = useMemo(() => {
+    const arr = [];
+    for (const [key, value] of Object.entries(services)) {
+      if (value) {
+        if (key == "vaccinations") {
+          arr.push("Vaccinations");
+        } else if (key == "operations") {
+          arr.push("Operations");
+        } else if (key == "mcu") {
+          arr.push("Medical Check-up");
+        } else if (key == "online_consultations") {
+          arr.push("Online Consultations");
+        }
       }
     }
-  }
+    return arr;
+  }, [services]);
 
   useEffect(() => {
     if (!map) return;

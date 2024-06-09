@@ -5,13 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AvailableDays, DoctorFormValues, DoctorFormattedData, Services, addDoctor, doctorSchema, editDoctor, getDoctor } from "@/utils/apis/doctor";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+
+const CreateArrFunction = (obj: AvailableDays[] | Services[]) => {
+  const arr = [];
+  for (const [key, value] of Object.entries(obj)) {
+    if (value) arr.push(key);
+  }
+
+  return arr;
+};
 
 const AddDoctor = () => {
   const { toast } = useToast();
@@ -22,16 +31,32 @@ const AddDoctor = () => {
   const [dataDokter, setDataDokter] = useState<Partial<DoctorFormattedData>>({});
   const [available, setAvailable] = useState<AvailableDays[]>([]);
   const [service, setService] = useState<Services[]>([]);
-  const arrAvailable: string[] = [];
-  const arrService: string[] = [];
-  const buttonTitle = paramValue == "edit" ? "Edit" : "Add";
 
-  for (const [key, value] of Object.entries(available)) {
-    if (value) arrAvailable.push(key);
-  }
-  for (const [key, value] of Object.entries(service)) {
-    if (value) arrService.push(key);
-  }
+  const arrAvailable = useMemo(() => {
+    return CreateArrFunction(available);
+  }, [available]);
+  const arrService = useMemo(() => {
+    return CreateArrFunction(service);
+  }, [service]);
+
+  // console.log(arrAvailable);
+  // console.log(arrService);
+
+  // useMemo(() => {
+  //   const arrAvailable: string[] = [];
+  //   const arrService: string[] = [];
+
+  //   console.log(arrAvailable);
+  //   console.log(arrService);
+  //   for (const [key, value] of Object.entries(available)) {
+  //     if (value) arrAvailable.push(key);
+  //   }
+  //   for (const [key, value] of Object.entries(service)) {
+  //     if (value) arrService.push(key);
+  //   }
+  // }, [available, service]);
+
+  const buttonTitle = paramValue == "edit" ? "Edit" : "Add";
 
   const form = useForm<DoctorFormValues>({
     resolver: zodResolver(doctorSchema),
