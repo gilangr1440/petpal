@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { EditProfileData } from '@/utils/apis/edit-profile/schema';
 
-const API_BASE_URL = 'http://zyannstore.my.id/users/profile'; 
+const API_BASE_URL = 'https://zyannstore.my.id/users/profile'; 
 
 export const getUserProfile = async () => {
   try {

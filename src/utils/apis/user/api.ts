@@ -33,7 +33,7 @@ export const editUser = async (body: UserTypeZod) => {
       formData.append("profile_picture", body.profile_picture);
     }
 
-    const response = await axiosWithConfig.patch(`http://zyannstore.my.id/users/profile`, formData);
+    const response = await axiosWithConfig.patch(`https://zyannstore.my.id/users/profile`, formData);
     return response.data as { message: string };
   } catch (error: any) {
     return error.response;

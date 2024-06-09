@@ -1,14 +1,18 @@
-import axios from "axios";
+import axiosWithConfig, { setAxiosConfig } from "@/utils/apis/axiosWithConfig";
 import { Clinic } from "@/utils/apis/list-clinics/types";
 import { clinicSchema } from "@/utils/apis/list-clinics/schema";
 
 const API_BASE_URL = "https://zyannstore.my.id/clinics";
 
-export const getClinics = async (): Promise<Clinic[]> => {
+export const getClinics = async (token: string): Promise<Clinic[]> => {
   try {
-    const response = await axios.get(API_BASE_URL);
+    
+    setAxiosConfig(token);
+
+    const response = await axiosWithConfig.get(`${API_BASE_URL}/clinics`);
     const clinics = response.data;
     console.log("API response:", clinics);
+
     const validClinics = clinics.map((clinic: any) => clinicSchema.parse(clinic));
 
     return validClinics;
