@@ -22,20 +22,6 @@ export const addDoctor = async (body: DoctorFormattedData) => {
       formData.append("profile_picture", body.profile_picture);
     }
 
-    // for (const key in body) {
-    //   const typedKey = key as keyof typeof body;
-    //   if (checkProperty(body[typedKey])) {
-    //     if (typedKey === "available_days" || typedKey === "services") {
-    //       for (const subKey in body[typedKey]) {
-    //         const typedSubKey = subKey as keyof (typeof body)[typeof typedKey];
-    //         formData.append(`${key}[${subKey}]`, String(body[typedKey][typedSubKey]));
-    //       }
-    //     } else {
-    //       formData.append(key, String(body[typedKey]));
-    //     }
-    //   }
-    // }
-
     const response = await axiosWithConfig.post("http://zyannstore.my.id/doctors", formData);
     return response.data;
   } catch (error: any) {
@@ -63,20 +49,6 @@ export const editDoctor = async (body: DoctorFormattedData) => {
     if (body.profile_picture) {
       formData.append("profile_picture", body.profile_picture);
     }
-
-    // for (const key in body) {
-    //   const typedKey = key as keyof typeof body;
-    //   if (checkProperty(body[typedKey])) {
-    //     if (typedKey === "available_days" || typedKey === "services") {
-    //       for (const subKey in body[typedKey]) {
-    //         const typedSubKey = subKey as keyof (typeof body)[typeof typedKey];
-    //         formData.append(`${key}[${subKey}]`, String(body[typedKey][typedSubKey]));
-    //       }
-    //     } else {
-    //       formData.append(key, String(body[typedKey]));
-    //     }
-    //   }
-    // }
 
     const response = await axiosWithConfig.patch("http://zyannstore.my.id/doctors", formData);
     return response.data;
