@@ -16,7 +16,7 @@ import { useAuth } from "@/utils/contexts/auth";
 import { editUser } from "@/utils/apis/user/api";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 
 type coordinateType = {
   lat: number;
@@ -258,7 +258,13 @@ const EditProfile = () => {
             </div>
             <div className="flex flex-wrap w-4/5 sm:justify-end mx-auto">
               <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
-                Edit Profile
+                {form.formState.isSubmitting ? (
+                  <p className="flex items-center justify-center gap-x-3 text-sm">
+                    <Loader2 className={"animate-spin text-xl "} /> Please wait
+                  </p>
+                ) : (
+                  "Edit Profile"
+                )}
               </Button>
             </div>
           </form>

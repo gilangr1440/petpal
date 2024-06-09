@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import { useAuth } from "@/utils/contexts/auth";
 import { AdminFormValues, editAdmin, editAdminSchema } from "@/utils/apis/admin";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -36,15 +36,42 @@ const EditProfileAdmin = () => {
   const { admin } = useAuth();
   const latitude = admin?.coordinate?.split(",")[0];
   const longitude = admin?.coordinate?.split(",")[1];
-  const arrAvailable = [];
-  const arrService = [];
-
-  for (const [key, value] of Object.entries(available)) {
-    if (value) arrAvailable.push(key);
-  }
-  for (const [key, value] of Object.entries(services)) {
-    if (value) arrService.push(key);
-  }
+  const arrAvailable = useMemo(() => {
+    const arr = [];
+    for (const [key, value] of Object.entries(available)) {
+      if (value) {
+        if (key == "monday") {
+          arr.push("Monday");
+        } else if (key == "tuesday") {
+          arr.push("Tuesday");
+        } else if (key == "wednesday") {
+          arr.push("Wednesday");
+        } else if (key == "thursday") {
+          arr.push("Thursday");
+        } else if (key == "friday") {
+          arr.push("Friday");
+        }
+      }
+    }
+    return arr;
+  }, [available]);
+  const arrService = useMemo(() => {
+    const arr = [];
+    for (const [key, value] of Object.entries(services)) {
+      if (value) {
+        if (key == "vaccinations") {
+          arr.push("Vaccinations");
+        } else if (key == "operations") {
+          arr.push("Operations");
+        } else if (key == "mcu") {
+          arr.push("Medical Check-up");
+        } else if (key == "online_consultations") {
+          arr.push("Online Consultations");
+        }
+      }
+    }
+    return arr;
+  }, [services]);
 
   useEffect(() => {
     if (!map) return;
@@ -74,11 +101,11 @@ const EditProfileAdmin = () => {
   });
 
   useEffect(() => {
-    form.setValue("coordinate", coor ? coor : (admin.coordinate as string));
-    form.setValue("full_name", admin.full_name as string);
-    form.setValue("email", admin.email as string);
-    form.setValue("address", admin.address as string);
-    form.setValue("number_phone", admin.number_phone as string);
+    form.setValue("coordinate", coor ? coor : (admin?.coordinate as string));
+    form.setValue("full_name", admin?.full_name as string);
+    form.setValue("email", admin?.email as string);
+    form.setValue("address", admin?.address as string);
+    form.setValue("number_phone", admin?.number_phone as string);
   }, [lat, lng, admin?.full_name, admin?.email, admin?.number_phone, admin?.coordinate, admin?.address]);
 
   const [previewUrl, setPreviewUrl] = useState<string | null | any>(null);
@@ -99,19 +126,24 @@ const EditProfileAdmin = () => {
         title: `${result.message}`,
       });
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `Something went wrong`,
+      });
     }
   }
 
   const getDataDoctor = async () => {
     try {
       const result = await getDoctor();
-      console.log(result);
       setDataDokter(result.data);
       setAvailable(result.data.available_days);
       setServices(result.data.service);
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: `Something went wrong`,
+      });
     }
   };
 
@@ -183,7 +215,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input id="full_name" placeholder="Your Name" {...field} />
+                        <Input id="full_name" placeholder="Your Name" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -196,7 +228,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input id="email" placeholder="youremail@mail.com" {...field} />
+                        <Input id="email" placeholder="youremail@mail.com" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -209,7 +241,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input id="password" type="password" placeholder="******" {...field} />
+                        <Input id="password" type="password" placeholder="******" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -224,7 +256,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input id="address" placeholder="Your Address" {...field} />
+                        <Input id="address" placeholder="Your Address" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -266,7 +298,7 @@ const EditProfileAdmin = () => {
                         </h1>
                       </div>
                       <FormControl>
-                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} />
+                        <Input type="text" id="coordinate" placeholder="Your Address Koordinat" className="hidden" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -279,7 +311,7 @@ const EditProfileAdmin = () => {
                     <FormItem className="mb-4">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input type="text" id="number_phone" placeholder="0898369234" {...field} />
+                        <Input type="text" id="number_phone" placeholder="0898369234" {...field} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -288,18 +320,24 @@ const EditProfileAdmin = () => {
               </div>
             </div>
             <div className="flex gap-3 w-4/5 justify-end mx-auto">
-              <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" id="add-doctor" onClick={() => navigate("/admin/add-doctor")} className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80 ${dataDokter.id && "hidden"}`}>
                 Add New Doctor
               </Button>
-              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
-                Edit Profile
+              <Button type="submit" id="edit-profile" className={`rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80`} disabled={form.formState.isSubmitting} aria-disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? (
+                  <p className="flex items-center justify-center gap-x-3 text-sm">
+                    <Loader2 className={"animate-spin text-xl "} /> Please wait
+                  </p>
+                ) : (
+                  "Edit Profile"
+                )}
               </Button>
             </div>
           </form>
         </Form>
       </div>
 
-      {dataDokter ? (
+      {dataDokter.id ? (
         <div className="w-4/5 mx-auto my-5 shadow-md rounded-lg p-5 sm:p-10 flex sm:justify-center md:gap-4 lg:gap-10 flex-wrap">
           <div className="md:w-[30%] lg:w-1/5 h-64">
             <img src={`${dataDokter.profile_picture}`} alt="doctor" className="w-full h-full object-cover rounded-md" />
@@ -337,14 +375,14 @@ const EditProfileAdmin = () => {
               </ul>
             </div>
             <div className="flex gap-3 justify-end">
-              <Button type="submit" className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
+              <Button type="button" id="edit-doctor" onClick={() => navigate("/admin/add-doctor?action=edit")} className="rounded-md bg-[#3487AC] hover:bg-[#3487AC]/80">
                 Edit Doctor
               </Button>
             </div>
           </div>
         </div>
       ) : (
-        <div>There is no doctor's data yet</div>
+        <h1 className="text-center">There is no doctor's data yet</h1>
       )}
     </Layout>
   );

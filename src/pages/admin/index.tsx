@@ -17,15 +17,14 @@ const Admin = () => {
   const fetchProductsAdmin = async (page: number) => {
     try {
       const result = await getProductsAdmin(page);
-      console.log(result);
-      setProducts(result.data.data);
+      setProducts(result.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleDetail = (id: number) => {
-    navigate(`/products/${id}`);
+    navigate(`/admin/products/${id}`);
   };
 
   const handleEdit = (id: number) => {
@@ -60,7 +59,7 @@ const Admin = () => {
 
   useEffect(() => {
     fetchProductsAdmin(1);
-  }, [products.length]);
+  }, [products?.length]);
 
   return (
     <Layout>
