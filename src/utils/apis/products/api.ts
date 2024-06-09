@@ -34,7 +34,10 @@ export const addProduct = async (body: ProductFormValues) => {
       formData.append("product_picture", body.product_picture);
     }
 
-    const response = await axiosWithConfig.post("https://zyannstore.my.id/products", formData);
+    const response = await axiosWithConfig.post(
+      "https://zyannstore.my.id/products",
+      formData
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error adding product:", error);
@@ -65,7 +68,10 @@ export const editProduct = async (body: ProductFormValues, id: number) => {
       formData.append("product_picture", body.product_picture);
     }
 
-    const response = await axiosWithConfig.patch(`https://zyannstore.my.id/products/${id}`, formData);
+    const response = await axiosWithConfig.patch(
+      `https://zyannstore.my.id/products/${id}`,
+      formData
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error edit product:", error);
@@ -75,7 +81,10 @@ export const editProduct = async (body: ProductFormValues, id: number) => {
 
 export const addOrder = async (body: OrderProducts) => {
   try {
-    const response = await axiosWithConfig.post(`https://zyannstore.my.id/orders`, body);
+    const response = await axiosWithConfig.post(
+      `https://zyannstore.my.id/orders`,
+      body
+    );
     return response.data;
   } catch (error: any) {
     throw new Error(error);
@@ -84,9 +93,21 @@ export const addOrder = async (body: OrderProducts) => {
 
 export const getOrder = async (id?: string) => {
   try {
-    const response = await axiosWithConfig.get(`https://zyannstore.my.id/orders/${id}`);
+    const response = await axiosWithConfig.get(
+      `https://zyannstore.my.id/orders/${id}`
+    );
     return response.data;
   } catch (error) {
     throw new Error(`${error}`);
+  }
+};
+
+export const orderHistory = async () => {
+  try {
+    const response = await axiosWithConfig.get("/orders");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching products:", error);
+    throw error;
   }
 };
