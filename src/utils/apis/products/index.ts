@@ -1,6 +1,6 @@
-import { getProductDetail, getProducts, addProduct, getProductsAdmin, editProduct } from "./api";
+import { getProductDetail, getProducts, addProduct, getProductsAdmin, editProduct, addOrder, getOrder } from "./api";
 import { productSchema } from "./scheme";
-import { ProductFormValues, ProductFormProps, IProductListData, IProductDetail, ProductAdmin } from "./interfaces";
+import { ProductFormValues, ProductFormProps, IProductListData, IProductDetail, ProductAdmin, OrderProducts } from "./interfaces";
 
-export { productSchema, getProducts, getProductDetail, addProduct, getProductsAdmin, editProduct };
-export type { ProductFormValues, ProductFormProps, IProductListData, IProductDetail, ProductAdmin };
+export { productSchema, getProducts, getProductDetail, addProduct, getProductsAdmin, editProduct, addOrder, getOrder };
+export type { ProductFormValues, ProductFormProps, IProductListData, IProductDetail, ProductAdmin, OrderProducts };

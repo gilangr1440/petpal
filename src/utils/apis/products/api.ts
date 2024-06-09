@@ -1,5 +1,5 @@
 import axiosWithConfig from "../axiosWithConfig";
-import { ProductFormValues } from "./interfaces";
+import { OrderProducts, ProductFormValues } from "./interfaces";
 
 export const getProducts = async (params?: string) => {
   try {
@@ -70,5 +70,23 @@ export const editProduct = async (body: ProductFormValues, id: number) => {
   } catch (error: any) {
     console.error("Error edit product:", error);
     throw error;
+  }
+};
+
+export const addOrder = async (body: OrderProducts) => {
+  try {
+    const response = await axiosWithConfig.post(`https://zyannstore.my.id/orders`, body);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getOrder = async () => {
+  try {
+    const response = await axiosWithConfig.get(`https://zyannstore.my.id/orders`);
+    return response;
+  } catch (error) {
+    throw new Error(`${error}`);
   }
 };

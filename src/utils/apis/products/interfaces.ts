@@ -32,3 +32,8 @@ export interface ProductAdmin {
   product_picture: string;
   price: number;
 }
+
+export interface OrderProducts {
+  product_id: number;
+  quantity: number;
+}
