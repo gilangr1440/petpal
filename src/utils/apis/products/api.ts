@@ -82,10 +82,10 @@ export const addOrder = async (body: OrderProducts) => {
   }
 };
 
-export const getOrder = async () => {
+export const getOrder = async (id?: string) => {
   try {
-    const response = await axiosWithConfig.get(`https://zyannstore.my.id/orders`);
-    return response;
+    const response = await axiosWithConfig.get(`https://zyannstore.my.id/orders/${id}`);
+    return response.data;
   } catch (error) {
     throw new Error(`${error}`);
   }

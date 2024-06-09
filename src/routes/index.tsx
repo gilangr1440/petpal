@@ -90,7 +90,7 @@ const App = () => {
           element: <History />,
         },
         {
-          path: "/payment",
+          path: "/payment/:id",
           element: <Payment />,
         },
         {

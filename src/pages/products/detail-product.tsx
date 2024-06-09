@@ -7,7 +7,7 @@ import Layout from "@/components/layout";
 import NumberFormatter from "@/components/number-formatter";
 
 import { IProductDetail, OrderProducts, addOrder } from "@/utils/apis/products";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Loaders from "@/components/loaders";
 
@@ -16,6 +16,8 @@ const DetailProduct: React.FC = () => {
   const [detailProduct, setDetailProduct] = useState<IProductDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -32,10 +34,9 @@ const DetailProduct: React.FC = () => {
   }, []);
 
   const orderProduct = async (body: OrderProducts) => {
-    console.log(body);
     try {
       const result = await addOrder(body);
-      console.log(result);
+      navigate(`/payment/${result.data.id}`);
     } catch (error) {
       throw new Error(`${error}`);
     }
@@ -77,9 +78,9 @@ const DetailProduct: React.FC = () => {
                   +
                 </Button>
               </div>
-              <Link to={"/payment"} onClick={() => orderProduct({ product_id: Number(id), quantity: quantity })} className={buttonVariants({ variant: "default" })}>
+              <Button onClick={() => orderProduct({ product_id: Number(id), quantity: quantity })} className={buttonVariants({ variant: "default" })}>
                 Pay Now
-              </Link>
+              </Button>
             </CardContent>
           </>
         )}

@@ -1,51 +1,35 @@
 import { FC, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Layout from "@/components/layout";
 import NumberFormatter from "@/components/number-formatter";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { getOrder } from "@/utils/apis/products";
+import { PaymentType, Transaction, getOrder } from "@/utils/apis/products";
+import { useAuth } from "@/utils/contexts/auth";
+import axiosWithConfig from "@/utils/apis/axiosWithConfig";
 
 const Payment: FC = () => {
   // const navigate = useNavigate();
-  const location = useLocation();
+  const { user } = useAuth();
+  const { id } = useParams();
+  const [transactionData, setTransactionData] = useState<Partial<Transaction>>({});
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [pembayaran, setPembayaran] = useState({
-    nama_lengkap: "",
-    alamat: "",
-    bank_account: "",
-  });
-  const [showData, setShowData] = useState({
-    nama_lengkap: "",
-    alamat: "",
-    bank_account: "",
-    va_number: "",
-  });
+  const [bank, setBank] = useState<string>("");
+  const [payment, setPayment] = useState<Partial<PaymentType>>({});
+
+  // console.log(transactionData);
 
   useEffect(() => {
-    if (location.state) {
-      setPembayaran({
-        ...pembayaran,
-        nama_lengkap: "John Doe",
-        alamat: "Jln budi mulya raya no 28 pademangan",
-      });
-    }
-    getOrderData();
-  }, [location.state]);
+    getOrderData(id);
+  }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPembayaran((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const getOrderData = async () => {
+  const getOrderData = async (id?: string) => {
     try {
-      const result = await getOrder();
-      console.log(result);
+      const result = await getOrder(id);
+      setTransactionData(result.data);
     } catch (error) {
       throw new Error(`${error}`);
     }
@@ -63,21 +47,35 @@ const Payment: FC = () => {
       confirmButtonColor: "rgb(3 150 199)",
     }).then((res: any) => {
       if (res.isConfirmed) {
-        axios
-          .post("/api/payment", pembayaran)
-          .then((response) => {
-            setShowData(response.data);
-            setShowPopup(true);
-          })
-          .catch(() => {
-            Swal.fire({
-              title: "Gagal",
-              text: "Pembayaran sebelumnya belum selesai",
-              icon: "error",
-              confirmButtonText: "OK",
-              confirmButtonColor: "rgb(3 150 199)",
+        if (bank) {
+          const pembayaran = {
+            payment_method: bank,
+            order_id: Number(id),
+          };
+          axiosWithConfig
+            .post("https://zyannstore.my.id/payments", pembayaran)
+            .then((response) => {
+              setPayment(response.data.data);
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Proceed to payment",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            })
+            .catch((error: any) => {
+              throw new Error(error);
             });
+        } else {
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Select Virtual Account",
+            showConfirmButton: false,
+            timer: 1500,
           });
+        }
       }
     });
   };
@@ -86,36 +84,48 @@ const Payment: FC = () => {
     <Layout>
       <div className="flex flex-col items-center justify-center pt-20 gap-8 font-Poppins">
         <div className="flex flex-col px-10 gap-3">
-          <span className="text-2xl md:text-3xl lg:text-4xl text-center">Pembayaran</span>
-          <span className="text-[#828282] text-center text-xs md:text-base">Lakukan Pembayaran produk yang diinginkan</span>
+          <span className="text-2xl md:text-3xl lg:text-4xl text-center">Payment</span>
         </div>
       </div>
 
-      <form onSubmit={handlePayment} className="flex justify-center items-center gap-3 h-auto my-20">
+      <div className="w-1/2 mx-auto flex gap-5 my-10">
+        <div className="flex flex-col gap-2 my-3">
+          <h1 className="text-base font-bold">User</h1>
+          <h1>{user.full_name}</h1>
+        </div>
+        <div className="flex flex-col gap-2 my-3">
+          <h1 className="text-base font-bold">Address</h1>
+          <h1>{user.address}</h1>
+        </div>
+      </div>
+      <form onSubmit={handlePayment} className="flex justify-center items-center gap-3 h-auto my-3">
         <div className="flex flex-col justify-center gap-3 w-full md:w-1/2">
-          <label className="font-semibold md:text-base text-sm">Pengguna</label>
-          <input required name="nama_lengkap" value={pembayaran.nama_lengkap} onChange={handleChange} type="text" className="p-2 bg-[#F6F6F6] rounded-md" placeholder="Masukan Nama Pengguna" />
-          <label className="font-semibold md:text-base text-sm">Alamat</label>
-          <input required name="alamat" value={pembayaran.alamat} onChange={handleChange} type="text" className="p-2 bg-[#F6F6F6] rounded-md" placeholder="Masukan Alamat" />
-          <label className="font-semibold md:text-base text-sm">Metode Pembayaran</label>
-          <Select required name="bank_account" value={pembayaran.bank_account} onValueChange={(value) => setPembayaran((prev) => ({ ...prev, bank_account: value }))}>
-            <SelectTrigger className="p-2 bg-[#F6F6F6] rounded-md">
-              <SelectValue placeholder="Pilih Metode Pembayaran" />
+          <label className="font-semibold md:text-base text-sm">Payment Methods</label>
+          <Select required name="bank_account" value={bank} onValueChange={(value) => setBank(value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose Virtual Account" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="BCA">BCA</SelectItem>
-              {/* Tambahkan metode pembayaran lain di sini */}
+              <SelectItem value="bca">BCA</SelectItem>
+              <SelectItem value="bri">BRI</SelectItem>
+              <SelectItem value="bni">BNI</SelectItem>
             </SelectContent>
           </Select>
           <div className="mt-4">
-            <span className="text-sm font-bold">Total Bayar : </span>
+            <span className="text-sm font-bold">Total : </span>
             <span className="font-bold text-lg text-red-500">
-              <NumberFormatter value={location.state?.total} />
+              <NumberFormatter value={transactionData.price} />
             </span>
           </div>
-          <Button type="submit" className="flex justify-center items-center mt-10 font-semibold bg-sky-600 w-full text-white py-2.5 rounded-md">
-            Lanjutkan Pembayaran
-          </Button>
+          {transactionData.payment?.invoice_id || payment?.invoice_id ? (
+            <Button type="button" onClick={() => setShowPopup(true)} className="flex justify-center items-center mt-10 font-semibold bg-sky-600 w-full text-white py-2.5 rounded-md">
+              Open VA Number
+            </Button>
+          ) : (
+            <Button type="submit" className="flex justify-center items-center mt-10 font-semibold bg-sky-600 w-full text-white py-2.5 rounded-md">
+              Continue
+            </Button>
+          )}
         </div>
       </form>
 
@@ -124,19 +134,19 @@ const Payment: FC = () => {
           <DialogHeader>
             <DialogTitle className="text-2xl font-semibold text-blue-700">Detail Pembayaran</DialogTitle>
           </DialogHeader>
-          <div className="my-2 text-sm">Nama: {showData.nama_lengkap}</div>
+          <div className="my-2 text-sm">Nama: {user.full_name}</div>
           <hr />
-          <div className="my-2 text-sm">Alamat: {showData.alamat}</div>
+          <div className="my-2 text-sm">Alamat: {user.address}</div>
           <hr />
-          <div className="my-2 text-sm">Metode Pembayaran: {showData.bank_account}</div>
+          <div className="my-2 text-sm">Metode Pembayaran: {payment.payment_status ? payment?.payment_status?.toUpperCase() : transactionData.payment?.payment_status?.toUpperCase()}</div>
           <hr />
           <div className="my-2 text-sm font-semibold">
             Total Pembayaran:{" "}
             <span className="font-bold text-lg">
-              <NumberFormatter value={location.state?.total} />
+              <NumberFormatter value={transactionData.price} />
             </span>
           </div>
-          <div className="mb-4 bg-orange-200 p-3 rounded text-lg font-bold">kode VA : {showData.va_number}</div>
+          <div className="mb-4 bg-orange-200 p-3 rounded text-lg font-bold">kode VA : {payment.va_number ? payment?.va_number : transactionData.payment?.va_number}</div>
           <div className="flex gap-3 mt-4">
             <Button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onClick={() => setShowPopup(false)}>
               Tutup
