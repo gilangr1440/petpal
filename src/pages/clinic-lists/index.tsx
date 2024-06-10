@@ -30,7 +30,10 @@ const ClinicLists = () => {
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
           {clinics &&
             clinics.map((clinic) => (
-              <Link to={`/detail-doctor/${clinic.admin_id}`} key={clinic.admin_id}>
+              <Link
+                to={`/detail-doctor/${clinic.admin_id}`}
+                key={clinic.admin_id}
+              >
                 <ClinicCard
                   image={clinic?.clinic_picture}
                   title={clinic?.clinic_name}

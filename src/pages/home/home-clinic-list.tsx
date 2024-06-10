@@ -1,51 +1,45 @@
 import ClinicCard from "@/components/clinic-card";
-import Loaders from "@/components/loaders";
-import axiosWithConfig from "@/utils/apis/axiosWithConfig";
+import { getClinics } from "@/utils/apis/list-clinics/api";
+import { Clinic } from "@/utils/apis/list-clinics/types";
+import { useAuth } from "@/utils/contexts/auth";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const HomeClinicList = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<any[]>([]);
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const { token } = useAuth();
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosWithConfig("/clinics");
-      setData(response.data.data);
-    } catch (error: any) {
-      console.log(error);
-      throw new error();
-    }
-    setLoading(false);
-  };
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <main className="relative min-h-[400px] w-full flex items-center justify-center">
-        <Loaders className="" />
-      </main>
-    );
-  }
-  if (data === null) {
+    const fetchClinics = async () => {
+      try {
+        const data = await getClinics();
+        console.log("Fetched clinics:", data);
+        setClinics(data.data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching clinics:", error);
+      }
+    };
+    fetchClinics();
+  }, [token]);
+  if (clinics === null) {
     return <p>Clinic Not Found</p>;
   }
 
   return (
-    <main className="w-full bg-red-500 grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {data.map((item) => (
-        <ClinicCard
-          key={item.admin_id}
-          image="https://source.unsplash.com/random?hospital"
-          title={item?.item_name}
-          description={`
-                Service: ${item.service}, 
-                Veterinary: ${item.veterinary}, 
-                Location: ${item.location}, 
-                Distance: ${item.distance.toFixed(2)} km`}
-        />
+    <main className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {clinics.map((clinic) => (
+        <Link to={"/detail-doctor/:id"} key={clinic.admin_id}>
+          <ClinicCard
+            image={clinic.clinic_picture}
+            title={clinic.clinic_name}
+            description={`
+              Service: ${clinic.service}, 
+              Veterinary: ${clinic.veterinary}, 
+              Location: ${clinic.location}, 
+              Distance: ${clinic?.distance?.toFixed(2)} km`}
+          />
+        </Link>
       ))}
     </main>
   );
