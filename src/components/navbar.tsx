@@ -1,16 +1,26 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCookies } from "react-cookie";
 import { useToast } from "./ui/use-toast";
 import { Toaster } from "./ui/toaster";
 import { useAuth } from "@/utils/contexts/auth";
+import { useAtom } from "jotai";
+import { searchProducts } from "@/utils/jotai/atom";
 
 const Navbar = () => {
   const { user, admin } = useAuth();
-  const [cookies, setCookie, removeCookie] = useCookies<any>(["token", "role"]);
+  const [, setSearchParams] = useAtom(searchProducts);
+  const [cookies, removeCookie] = useCookies<any>(["token", "role"]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -36,19 +46,29 @@ const Navbar = () => {
         </Link>
         <div className="hidden sm:flex items-center rounded-md px-2 bg-white">
           <Search />
-          <Input type="text" placeholder="Search Product" className="border-0 w-80 focus-visible:ring-0 focus-visible:ring-offset-0" />
+          <Input
+            type="text"
+            placeholder="Search Product"
+            className="border-0 w-80 focus-visible:ring-0 focus-visible:ring-offset-0"
+            onChange={(e) => setSearchParams(e.target.value)}
+          />
         </div>
 
         {cookies.role == "user" ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src={user?.profile_picture} className="w-full h-full object-cover bg-white" />
+                <AvatarImage
+                  src={user?.profile_picture}
+                  className="w-full h-full object-cover bg-white"
+                />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Hi, {user.full_name != "" ? user.full_name : ""}</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                Hi, {user.full_name != "" ? user.full_name : ""}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <NavLink to={"/clinic-lists"}>
                 <DropdownMenuItem>Clinic</DropdownMenuItem>
@@ -76,12 +96,17 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <Avatar>
-                <AvatarImage src={admin?.profile_picture} className="w-full h-full object-cover bg-white" />
+                <AvatarImage
+                  src={admin?.profile_picture}
+                  className="w-full h-full object-cover bg-white"
+                />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Hi, {admin ? admin?.full_name : ""}</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                Hi, {admin ? admin?.full_name : ""}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <NavLink to={"/admin"}>
                 <DropdownMenuItem>Admin</DropdownMenuItem>
@@ -106,7 +131,10 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <NavLink to={"/register"} className="p-2 rounded-md bg-[#036da1] hover:bg-[#036da1]/70 text-white">
+          <NavLink
+            to={"/register"}
+            className="p-2 rounded-md bg-[#036da1] hover:bg-[#036da1]/70 text-white"
+          >
             Register
           </NavLink>
         )}

@@ -3,7 +3,7 @@ import { OrderProducts, ProductFormValues } from "./interfaces";
 
 export const getProducts = async (params?: string) => {
   try {
-    const response = await axiosWithConfig.get(`/products?${params}`);
+    const response = await axiosWithConfig.get(`/products${params}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching products:", error);
