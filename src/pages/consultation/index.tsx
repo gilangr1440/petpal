@@ -58,7 +58,7 @@ const Consultation = () => {
             </Table>
           ) : (
             <div className="w-full h-full flex items-center justify-center flex-col">
-              <img src="/public/assets/data-not-dound.png" alt="consultation" className="mx-auto" />
+              <img src="/assets/data-not-dound.png" alt="consultation" className="mx-auto" />
               <h1>You dont have Consultation History</h1>
             </div>
           )}

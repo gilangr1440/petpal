@@ -6,8 +6,10 @@ import { ClinicType } from "@/utils/apis/list-clinics/types";
 import { useAuth } from "@/utils/contexts/auth";
 import { Link } from "react-router-dom";
 import { getKeyByValue } from "@/utils/apis/list-clinics/helper";
+import Loaders from "@/components/loaders";
 
 const ClinicLists = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [clinics, setClinics] = useState<ClinicType[]>([]);
   const { token } = useAuth();
 
@@ -19,9 +21,16 @@ const ClinicLists = () => {
       } catch (error) {
         console.error("Error fetching clinics:", error);
       }
+      setLoading(false);
     };
     fetchClinics();
   }, [token]);
+
+  if (loading) {
+    return (
+      <Loaders className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" />
+    );
+  }
 
   return (
     <Layout>
