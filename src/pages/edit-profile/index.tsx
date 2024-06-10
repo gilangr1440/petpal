@@ -40,7 +40,7 @@ const EditProfile = () => {
   }, [map]);
 
   const { lat, lng } = coords;
-  const coor = lat != 0 && lng != 0 ? `${lat.toFixed(3)}, ${lng.toFixed(3)}` : null;
+  const coor = lat != 0 && lng != 0 ? `${lat.toFixed(3)},${lng.toFixed(3)}` : null;
 
   const customIcon = new Icon({
     iconUrl: "../../../public/assets/placeholder.png",

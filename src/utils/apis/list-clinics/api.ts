@@ -30,3 +30,12 @@ export const addConsultation = async (body: ConsultationType, id: number) => {
     throw new Error(`${error}`);
   }
 };
+
+export const getConsultationHistory = async () => {
+  try {
+    const response = await axiosWithConfig.get(`/consultations`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`${error}`);
+  }
+};

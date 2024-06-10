@@ -31,3 +31,21 @@ export type ClinicType = {
   price: number;
   about: string;
 };
+
+export type ConsultationHistoryType = {
+  id: number;
+  consultation_status: string;
+  scheduled_date: string;
+  service: string;
+  transaction_status: string;
+  doctor_details: {
+    full_name: string;
+    id: number;
+    profile_picture: string;
+  };
+  user_details: {
+    full_name: string;
+    id: number;
+    profile_picture: string;
+  };
+};
