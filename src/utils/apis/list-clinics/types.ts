@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { addConsultationSchema, clinicSchema, openHoursSchema } from "@/utils/apis/list-clinics/schema";
+import {
+  addConsultationSchema,
+  clinicSchema,
+  openHoursSchema,
+} from "@/utils/apis/list-clinics/schema";
 
 export type Clinic = z.infer<typeof clinicSchema>;
 export type OpenHours = z.infer<typeof openHoursSchema>;

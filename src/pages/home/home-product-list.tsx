@@ -25,7 +25,12 @@ const HomeProductList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [sort,limit]);
+  }, [sort, limit]);
+
+  const handleLimit = () => {
+    setLimit(limit + 10);
+  };
+
   if (loading) {
     return (
       <main className="relative min-h-[400px] w-full flex items-center justify-center">
@@ -34,13 +39,14 @@ const HomeProductList = () => {
     );
   }
 
-  const handleLimit = () => {
-    setLimit(limit + 10);
-  };
-
   if (data === null) {
-    return <p>Product Not Found</p>;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <img src="/public/assets/data-not-dound.png" alt="" />
+      </div>
+    );
   }
+  
   return (
     <>
       <main className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

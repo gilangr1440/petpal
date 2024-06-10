@@ -21,9 +21,11 @@ const Home = () => {
       <section className="relative container mx-auto h-full flex items-start justify-center flex-col gap-y-8 py-6">
         {cookies.role == "user" || !cookies.role ? (
           <>
-            <header className={`w-full flex flex-col sm:items-end gap-y-4 sm:flex-row sm:justify-between`}>
+            <header
+              className={`w-full flex flex-col sm:items-end gap-y-4 sm:flex-row sm:justify-between`}
+            >
               <CategoryTabs onTabChange={setActiveTab} />
-              <SortProducts />
+              {activeTab === "petshop" ? <SortProducts /> : null}
             </header>
             {activeTab === "petshop" ? <HomeProductList /> : <HomeClinicList />}
           </>
