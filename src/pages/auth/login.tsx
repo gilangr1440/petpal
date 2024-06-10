@@ -21,7 +21,7 @@ import { Loader2 } from "lucide-react";
 const Login = () => {
   const { toast } = useToast();
   const { changeToken } = useAuth();
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [, setCookie] = useCookies();
   const navigate = useNavigate();
   const [role, setRole] = useState<string>("user");
 

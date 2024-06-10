@@ -6,33 +6,41 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import Layout from "@/components/layout";
 import NumberFormatter from "@/components/number-formatter";
 
-import { IProductDetail } from "@/utils/apis/products";
-import { Link, useParams } from "react-router-dom";
+import { IProductDetail, OrderProducts, addOrder } from "@/utils/apis/products";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Loaders from "@/components/loaders";
 
 const DetailProduct: React.FC = () => {
   let { id } = useParams<{ id: string }>();
-  const [detailProduct, setDetailProduct] = useState<IProductDetail | null>(
-    null
-  );
+  const [detailProduct, setDetailProduct] = useState<IProductDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const detailProduct = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/products/${Number(id)}`
-      );
+      const detailProduct = await axios.get(`${import.meta.env.VITE_BASE_URL}/products/${Number(id)}`);
       setDetailProduct(detailProduct.data.data);
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch product details:", error);
+      throw new Error(`${error}`);
     }
   };
   useEffect(() => {
     fetchData();
   }, []);
+
+  const orderProduct = async (body: OrderProducts) => {
+    try {
+      const result = await addOrder(body);
+      navigate(`/payment/${result.data.id}`);
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  };
 
   const handleIncrement = () => {
     if (detailProduct && quantity >= detailProduct.stock) return;
@@ -50,21 +58,13 @@ const DetailProduct: React.FC = () => {
           <Loaders className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2" />
         ) : (
           <>
-            <img
-              src={`${detailProduct?.product_picture}`}
-              alt={`${detailProduct?.product_name}`}
-              className="w-full md:w-80 h-auto object-cover rounded-lg mb-auto"
-            />
+            <img src={`${detailProduct?.product_picture}`} alt={`${detailProduct?.product_name}`} className="w-full md:w-80 h-auto object-cover rounded-lg mb-auto" />
             <CardContent className="w-full md:w-1/2 md:ml-8 flex items-start justify-start flex-col">
-              <CardTitle className="text-2xl font-bold mb-2 ">
-                {`${detailProduct?.product_name}`}
-              </CardTitle>
+              <CardTitle className="text-2xl font-bold mb-2 ">{`${detailProduct?.product_name}`}</CardTitle>
               <span className="text-xl font-semibold text-gray-700 mb-4">
                 <NumberFormatter value={`${detailProduct?.price}`} />
               </span>
-              <span className="text-gray-600 mb-4 mr-2">
-                {`${detailProduct?.description}`}
-              </span>
+              <span className="text-gray-600 mb-4 mr-2">{`${detailProduct?.description}`}</span>
               <div className="flex items-center mb-4">
                 <span className="mr-2">Stock:</span>
                 <span className="font-bold">{`${detailProduct?.stock}`}</span>
@@ -73,22 +73,14 @@ const DetailProduct: React.FC = () => {
                 <Button variant="outline" onClick={handleDecrement}>
                   -
                 </Button>
-                <Input
-                  type="number"
-                  className="text-center w-14 border-t border-b border-gray-300 focus:outline-none"
-                  value={quantity}
-                  readOnly
-                />
+                <Input type="number" className="text-center w-14 border-t border-b border-gray-300 focus:outline-none" value={quantity} readOnly />
                 <Button variant="outline" onClick={handleIncrement}>
                   +
                 </Button>
               </div>
-              <Link
-                to={"/payment"}
-                className={buttonVariants({ variant: "default" })}
-              >
+              <Button onClick={() => orderProduct({ product_id: Number(id), quantity: quantity })} className={buttonVariants({ variant: "default" })}>
                 Pay Now
-              </Link>
+              </Button>
             </CardContent>
           </>
         )}
