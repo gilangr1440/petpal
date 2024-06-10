@@ -163,8 +163,8 @@ const DetailDoctor = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="mcu">Medical Checkup</SelectItem>
-                            <SelectItem value="online consultation">Konsultasi Online</SelectItem>
+                            <SelectItem value="Medical Check-up">Medical Check-up</SelectItem>
+                            <SelectItem value="Online Consultation">Online Consultation</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
