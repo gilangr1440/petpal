@@ -36,3 +36,13 @@ export interface UserFormValues {
   number_phone: string;
   profile_picture: File | null;
 }
+
+export interface UserTypeZod {
+  full_name: string;
+  email: string;
+  password: string | undefined;
+  address: string;
+  coordinate: string;
+  number_phone: string;
+  profile_picture: File | null;
+}

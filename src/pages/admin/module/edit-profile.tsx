@@ -28,6 +28,7 @@ type coordinateType = {
 };
 
 const EditProfileAdmin = () => {
+  const { token } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [dataDokter, setDataDokter] = useState<Partial<DoctorFormattedData>>({});

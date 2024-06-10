@@ -8,7 +8,7 @@ interface IProductCart {
 }
 
 const ProductCard = ({ data }: IProductCart) => {
-  const [cookies, setCookie, removeCookie] = useCookies<any>(["token", "role"]);
+  const [cookies, ,] = useCookies<any>(["token", "role"]);
 
   return (
     <Link to={`${cookies.role == "user" ? `/products/${data.id}` : `/admin/products/${data.id}`}`} key={data.id}>

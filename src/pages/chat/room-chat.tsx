@@ -1,14 +1,10 @@
 import { useRef, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import HeaderChat from "./header-chat";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
-import {
-  getChatMessages,
-  postChatMessage,
-  deleteChatBubble,
-} from "@/utils/apis/chat/api";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import { Send } from "lucide-react";
+import { getChatMessages, postChatMessage, deleteChatBubble } from "@/utils/apis/chat/api";
 import Loaders from "@/components/loaders";
 import BubbleChat from "./bubble-chat";
 import FormChat from "./form-chat";
@@ -83,9 +79,7 @@ const RoomChat = ({ roomChatId }: IProps) => {
     try {
       const response = await deleteChatBubble(roomChatId, bubbleId);
       if (response) {
-        setMessages((prevMessages) =>
-          prevMessages.filter((message) => message.id !== bubbleId)
-        );
+        setMessages((prevMessages) => prevMessages.filter((message) => message.id !== bubbleId));
       }
     } catch (error) {
       console.error("Error deleting message:", error);
@@ -108,27 +102,9 @@ const RoomChat = ({ roomChatId }: IProps) => {
       ) : (
         <div className="h-full relative flex flex-col gap-3 overflow-y-scroll px-5 pt-3 pb-0">
           <section className="grid grid-cols-1 grid-flow-row auto-rows-max gap-y-2">
-            {messages.length > 0 ? (
-              messages.map((message, index) => (
-                <BubbleChat
-                  key={index}
-                  message={message}
-                  loginId={loginId}
-                  onDelete={() => handleDelete(message.id)}
-                />
-              ))
-            ) : (
-              <p>No messages</p>
-            )}
+            {messages.length > 0 ? messages.map((message, index) => <BubbleChat key={index} message={message} loginId={loginId} onDelete={() => handleDelete(message.id)} />) : <p>No messages</p>}
           </section>
-          <FormChat
-            sendMessage={sendMessage}
-            updatedChat={updatedChat}
-            handleKeyDown={handleKeyDown}
-            sending={sending}
-            autoScrollToBottom={autoScrollToBottom}
-            setUpdatedChat={setUpdatedChat}
-          />
+          <FormChat sendMessage={sendMessage} updatedChat={updatedChat} handleKeyDown={handleKeyDown} sending={sending} autoScrollToBottom={autoScrollToBottom} setUpdatedChat={setUpdatedChat} />
         </div>
       )}
     </div>

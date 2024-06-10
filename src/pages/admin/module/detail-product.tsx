@@ -2,6 +2,7 @@ import Layout from "@/components/layout";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { IProductDetail, getProductDetail } from "@/utils/apis/products";
+import { useAuth } from "@/utils/contexts/auth";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,6 +12,7 @@ const DetailProductByAdmin = () => {
   const { product_id } = useParams();
   const [detailProduct, setDetailProduct] = useState<Partial<IProductDetail>>({});
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const getDetailData = async (id: string | undefined) => {
     try {

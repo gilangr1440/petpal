@@ -18,18 +18,20 @@ PetPal App is a specialized platform for pet needs. This application provides va
 ## 💎 Features
 
 ### 👤 Admin
+
 - Create Account
 - Login Account
-- 
-- 
-- 
+- Sell Product
+- Medical Check-up Services
+-
 
 ### 👥 User
+
 - Create Account
 - Login Account
-- 
+-
 - Simulation Payment with Midtrans
 - Edit Profile
+- Buy Animal Product and Medical Check-up Services
 
 ## 🔗 Deployment
-

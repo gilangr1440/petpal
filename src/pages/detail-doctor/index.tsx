@@ -172,7 +172,7 @@ const DetailDoctor = () => {
                       </FormItem>
                     )}
                   />
-                  <Button onClick={} type="submit" className="w-full bg-blue-500">
+                  <Button type="submit" className="w-full bg-blue-500">
                     Continue
                   </Button>
                 </form>

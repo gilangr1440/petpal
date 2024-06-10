@@ -1,6 +1,6 @@
-import { editUserSchema, UserType, UserFormValues } from "./types";
+import { editUserSchema, UserType, UserFormValues, UserTypeZod } from "./types";
 import { getUser } from "./api";
 
 export { getUser };
-export type { UserType, UserFormValues };
+export type { UserType, UserFormValues, UserTypeZod };
 export { editUserSchema };

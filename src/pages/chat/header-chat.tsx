@@ -1,14 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IConsultation } from "@/utils/apis/chat/interfaces";
 import { getConsultations } from "@/utils/apis/clinics/api";
-import { sideMenuChat } from "@/utils/jotai/atom";
-import { useAtom } from "jotai";
+// import { sideMenuChat } from "@/utils/jotai/atom";
+// import { useAtom } from "jotai";
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
 const HeaderChat = ({ roomChatId }: { roomChatId: number }) => {
-  const [sideMenu, setSideMenu] = useAtom(sideMenuChat);
+  // const [sideMenu, setSideMenu] = useAtom(sideMenuChat);
   const [roomChat, setRoomChat] = useState<IConsultation | null>(null);
   const [cookies] = useCookies();
   const role = cookies.role;
@@ -16,9 +16,7 @@ const HeaderChat = ({ roomChatId }: { roomChatId: number }) => {
   useEffect(() => {
     const getRoomChat = async () => {
       const response = await getConsultations();
-      const currentRoomChat = response.data.find(
-        (item: IConsultation) => item.id === roomChatId
-      );
+      const currentRoomChat = response.data.find((item: IConsultation) => item.id === roomChatId);
       setRoomChat(currentRoomChat);
     };
     getRoomChat();
@@ -33,21 +31,10 @@ const HeaderChat = ({ roomChatId }: { roomChatId: number }) => {
       </div>
       <div className="flex items-center justify-center flex-row gap-x-2">
         <Avatar className="w-10 h-10">
-          <AvatarImage
-            src={
-              roomChat[role === "admin" ? "user_details" : "doctor_details"]
-                .profile_picture
-            }
-            className="w-full h-full object-cover rounded-full"
-          />
+          <AvatarImage src={roomChat[role === "admin" ? "user_details" : "doctor_details"].profile_picture} className="w-full h-full object-cover rounded-full" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <h1 className="">
-          {
-            roomChat[role === "admin" ? "user_details" : "doctor_details"]
-              .full_name
-          }
-        </h1>
+        <h1 className="">{roomChat[role === "admin" ? "user_details" : "doctor_details"].full_name}</h1>
       </div>
     </div>
   );
