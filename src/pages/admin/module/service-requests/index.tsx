@@ -9,27 +9,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import axiosWithConfig from "@/utils/apis/axiosWithConfig";
+import { getConsultations } from "@/utils/apis/clinics/api";
 import { useEffect, useState } from "react";
 
 const ServiceRequests = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getData = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosWithConfig.get(
-        `${import.meta.env.VITE_BASE_URL}/consultations`
-      );
-      setData(response.data.data);
-    } catch (error: any) {
-      console.error(error);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    getData();
+    getConsultations().then((response) => {
+      setLoading(true);
+      setData(response.data);
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -53,7 +45,6 @@ const ServiceRequests = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[60px]">No</TableHead>
                     <TableHead>Nama</TableHead>
                     <TableHead>Service Nama</TableHead>
                     <TableHead>Transaction Status</TableHead>
@@ -62,18 +53,25 @@ const ServiceRequests = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.map((item, index) => (
+                  {data.map((item) => (
                     <TableRow
-                      key={item.ID}
+                      key={item.id}
                       onClick={() => console.log("Hello World!")}
                     >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
-                      <TableCell>{item.UserDetails.full_name}</TableCell>
-                      <TableCell>{item.Consultation}</TableCell>
-                      <TableCell>{item.TransactionStatus}</TableCell>
-                      <TableCell>{item.StatusConsultation}</TableCell>
-                      <TableCell>
-                        {new Date(item.CreatedAt).toLocaleDateString()}
+                      <TableCell className="capitalize">
+                        {item.user_details.full_name}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.service}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.transaction_status}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.consultation_status}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.scheduled_date}
                       </TableCell>
                     </TableRow>
                   ))}
