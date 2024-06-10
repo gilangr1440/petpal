@@ -54,7 +54,7 @@ const AllProducts = () => {
           <ProductList data={data} />
         ) : (
           <div className="w-full flex flex-col items-center justify-center">
-            <img src="/public/assets/data-not-dound.png" alt="" />
+            <img src="/assets/data-not-dound.png" alt="" />
             <Button onClick={prevPage}>Back</Button>
           </div>
         )}
