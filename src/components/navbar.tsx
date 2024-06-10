@@ -50,7 +50,7 @@ const Navbar = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>Hi, {user.full_name != "" ? user.full_name : ""}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <NavLink to={"clinic-lists"}>
+              <NavLink to={"/clinic-lists"}>
                 <DropdownMenuItem>Clinic</DropdownMenuItem>
               </NavLink>
               <NavLink to={"/chat"}>
@@ -58,6 +58,9 @@ const Navbar = () => {
               </NavLink>
               <NavLink to={"/history"}>
                 <DropdownMenuItem>History</DropdownMenuItem>
+              </NavLink>
+              <NavLink to={"/consultation"}>
+                <DropdownMenuItem>Consultation</DropdownMenuItem>
               </NavLink>
               <DropdownMenuSeparator />
               <NavLink to={"/edit-profile"}>

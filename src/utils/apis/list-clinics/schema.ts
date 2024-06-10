@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const openHoursSchema = z.object({
   id: z.number(),
@@ -19,4 +19,13 @@ export const clinicSchema = z.object({
   location: z.string(),
   coordinate: z.string(),
   distance: z.number(),
+});
+
+export const addConsultationSchema = z.object({
+  scheduled_date: z.date({
+    required_error: "A date of consul is required.",
+  }),
+  service: z.string({
+    required_error: "Please select a service.",
+  }),
 });

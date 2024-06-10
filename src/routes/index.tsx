@@ -19,6 +19,7 @@ import EditProfileAdmin from "@/pages/admin/module/edit-profile";
 import DetailProduct from "@/pages/products/detail-product";
 import Payment from "@/pages/transaction";
 import AddDoctor from "@/pages/admin/module/add-doctor";
+import Consultation from "@/pages/consultation";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -96,6 +97,10 @@ const App = () => {
         {
           path: "/admin/add-doctor",
           element: <AddDoctor />,
+        },
+        {
+          path: "/consultation",
+          element: <Consultation />,
         },
       ],
     },
