@@ -4,16 +4,21 @@ import HeaderChat from "./header-chat";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { getChatMessages, postChatMessage } from "@/utils/apis/chat/api";
+import {
+  getChatMessages,
+  postChatMessage,
+  deleteChatBubble,
+} from "@/utils/apis/chat/api";
 import Loaders from "@/components/loaders";
 import BubbleChat from "./bubble-chat";
+import FormChat from "./form-chat";
 
 interface IProps {
   roomChatId: number;
 }
 
 const RoomChat = ({ roomChatId }: IProps) => {
-  const [newChat, setNewChat] = useState<string>("");
+  const [updatedChat, setUpdatedChat] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [messages, setMessages] = useState<any[]>([]);
   const [sending, setSending] = useState<boolean>(false);
@@ -28,13 +33,13 @@ const RoomChat = ({ roomChatId }: IProps) => {
       autoScrollToBottom.current.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
   const getMessages = async () => {
     setLoading(true);
     try {
       const newMessages = await getChatMessages(roomChatId);
       if (Array.isArray(newMessages.data)) {
-        setMessages((prevMessages) => [...prevMessages, ...newMessages.data]);
-      } else {
+        setMessages(newMessages.data);
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -52,19 +57,20 @@ const RoomChat = ({ roomChatId }: IProps) => {
   }, [roomChatId]);
 
   const sendMessage = async () => {
-    if (!newChat.trim()) {
+    if (!updatedChat.trim()) {
       return;
     }
     setSending(true);
     try {
-      const response = await postChatMessage(roomChatId, newChat);
+      const response = await postChatMessage(roomChatId, updatedChat);
       if (response) {
         const newMessage = {
-          message: newChat,
-          sender_id: loginId,
+          message: updatedChat,
+          sender: { id: loginId },
+          time_stamp: new Date().toISOString(),
         };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-        setNewChat("");
+        setUpdatedChat("");
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -73,7 +79,24 @@ const RoomChat = ({ roomChatId }: IProps) => {
     }
   };
 
-  console.log(messages);
+  const handleDelete = async (bubbleId: number) => {
+    try {
+      const response = await deleteChatBubble(roomChatId, bubbleId);
+      if (response) {
+        setMessages((prevMessages) =>
+          prevMessages.filter((message) => message.id !== bubbleId)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
 
   return (
     <div className={`relative w-full h-full flex flex-col`}>
@@ -84,29 +107,28 @@ const RoomChat = ({ roomChatId }: IProps) => {
         </div>
       ) : (
         <div className="h-full relative flex flex-col gap-3 overflow-y-scroll px-5 pt-3 pb-0">
-          {messages.length > 0 ? (
-            messages.map((message, index) => (
-              <BubbleChat key={index} message={message} loginId={loginId} />
-            ))
-          ) : (
-            <p>No messages</p>
-          )}
-          <div className="sticky top-full right-0 w-full flex items-center gap-3 py-3">
-            <Input
-              id="inputChat"
-              value={newChat}
-              onChange={(e) => setNewChat(e.target.value)}
-              placeholder="type some text"
-              ref={autoScrollToBottom}
-            />
-            <Button onClick={sendMessage}>
-              {sending ? (
-                <Loaders className="" width="w-5" height="h-5" />
-              ) : (
-                <Send />
-              )}
-            </Button>
-          </div>
+          <section className="grid grid-cols-1 grid-flow-row auto-rows-max gap-y-2">
+            {messages.length > 0 ? (
+              messages.map((message, index) => (
+                <BubbleChat
+                  key={index}
+                  message={message}
+                  loginId={loginId}
+                  onDelete={() => handleDelete(message.id)}
+                />
+              ))
+            ) : (
+              <p>No messages</p>
+            )}
+          </section>
+          <FormChat
+            sendMessage={sendMessage}
+            updatedChat={updatedChat}
+            handleKeyDown={handleKeyDown}
+            sending={sending}
+            autoScrollToBottom={autoScrollToBottom}
+            setUpdatedChat={setUpdatedChat}
+          />
         </div>
       )}
     </div>
