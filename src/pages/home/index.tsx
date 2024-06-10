@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("petshop");
-  const [cookies, setCookie, removeCookie] = useCookies<any>(["token", "role"]);
+  const [cookies] = useCookies<any>(["token", "role"]);
 
   return (
     <Layout>
@@ -17,7 +17,7 @@ const Home = () => {
         <div className="container mx-auto h-full grid grid-cols-1 lg:grid-cols-2 place-items-center pt-8">
           <Hero />
         </div>
-      </section>
+    </section>
       <section className="relative container mx-auto h-full flex items-start justify-center flex-col gap-y-8 py-6">
         {cookies.role == "user" || !cookies.role ? (
           <>

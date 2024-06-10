@@ -1,4 +1,3 @@
-import ClinicCard from "@/components/clinic-card";
 import Loaders from "@/components/loaders";
 import {
   Card,
