@@ -62,7 +62,7 @@ const History = () => {
           ) : (
             <div className="w-full h-full flex items-center justify-center flex-col">
               <img
-                src="/public/assets/data-not-dound.png"
+                src="/assets/data-not-dound.png"
                 alt=""
                 className="mx-auto"
               />

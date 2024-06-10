@@ -5,7 +5,7 @@ const EmptyChat = ({ role }: { role: string }) => {
   if (role == "user") {
     return (
       <div className="w-full h-[calc(100vh-68px)] flex flex-col items-center justify-center">
-        <img src="/public/assets/data-not-dound.png" alt="" />
+        <img src="/assets/data-not-dound.png" alt="" />
         <h1 className="text-xl font-semibold">You dont have conversation</h1>
         <Link
           to={"/clinic-lists"}
@@ -18,7 +18,7 @@ const EmptyChat = ({ role }: { role: string }) => {
   } else if (role == "admin") {
     return (
       <div className="w-full h-[calc(100vh-68px)] flex flex-col items-center justify-center">
-        <img src="/public/assets/data-not-dound.png" alt="" />
+        <img src="/assets/data-not-dound.png" alt="" />
         <h1 className="text-xl font-semibold">You dont have conversation</h1>
       </div>
     );

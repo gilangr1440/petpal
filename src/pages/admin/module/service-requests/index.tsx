@@ -1,6 +1,13 @@
 import Layout from "@/components/layout";
 import Loaders from "@/components/loaders";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getConsultations } from "@/utils/apis/clinics/api";
 import { useEffect, useState } from "react";
 
@@ -28,8 +35,10 @@ const ServiceRequests = () => {
             </header>
             {data == null ? (
               <div className="w-full flex flex-col items-center justify-center">
-                <img src="/public/assets/data-not-dound.png" alt="" />
-                <h1 className="text-xl font-semibold">You don't have Service Request</h1>
+                <img src="/assets/data-not-dound.png" alt="" />
+                <h1 className="text-xl font-semibold">
+                  You don't have Service Request
+                </h1>
               </div>
             ) : (
               <Table>
@@ -44,12 +53,25 @@ const ServiceRequests = () => {
                 </TableHeader>
                 <TableBody>
                   {data.map((item) => (
-                    <TableRow key={item.id} onClick={() => console.log("Hello World!")}>
-                      <TableCell className="capitalize">{item.user_details.full_name}</TableCell>
-                      <TableCell className="capitalize">{item.service}</TableCell>
-                      <TableCell className="capitalize">{item.transaction_status}</TableCell>
-                      <TableCell className="capitalize">{item.consultation_status}</TableCell>
-                      <TableCell className="capitalize">{item.scheduled_date}</TableCell>
+                    <TableRow
+                      key={item.id}
+                      onClick={() => console.log("Hello World!")}
+                    >
+                      <TableCell className="capitalize">
+                        {item.user_details.full_name}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.service}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.transaction_status}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.consultation_status}
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {item.scheduled_date}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

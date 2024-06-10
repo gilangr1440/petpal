@@ -1,13 +1,16 @@
 import { useRef, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import HeaderChat from "./header-chat";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import { Send } from "lucide-react";
-import { getChatMessages, postChatMessage, deleteChatBubble } from "@/utils/apis/chat/api";
+import {
+  getChatMessages,
+  postChatMessage,
+  deleteChatBubble,
+} from "@/utils/apis/chat/api";
 import Loaders from "@/components/loaders";
 import BubbleChat from "./bubble-chat";
 import FormChat from "./form-chat";
+import { useAtom } from "jotai";
+import { loadingRoomChat } from "@/utils/jotai/atom";
 
 interface IProps {
   roomChatId: number;
@@ -15,7 +18,7 @@ interface IProps {
 
 const RoomChat = ({ roomChatId }: IProps) => {
   const [updatedChat, setUpdatedChat] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useAtom(loadingRoomChat);
   const [messages, setMessages] = useState<any[]>([]);
   const [sending, setSending] = useState<boolean>(false);
 
@@ -91,6 +94,14 @@ const RoomChat = ({ roomChatId }: IProps) => {
       sendMessage();
     }
   };
+
+  if (loading) {
+    return (
+      <main className="relative min-h-[400px] w-full flex items-center justify-center">
+        <Loaders className="" />
+      </main>
+    );
+  }
 
   return (
     <div className={`relative w-full h-full flex flex-col`}>
