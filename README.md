@@ -36,4 +36,4 @@ PetPal App is a specialized platform for pet needs. This application provides va
 
 ## 🔗 Deployment
 
-![PetPal](https://petpal-nu.vercel.app/)
+https://petpal-nu.vercel.app/
