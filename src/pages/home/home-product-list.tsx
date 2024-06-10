@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { IProductListData, getProducts } from "../../utils/apis/products";
 import ProductCard from "@/components/product-card";
 import { useAtom } from "jotai";
-import {
-  limitProducts,
-  searchProducts,
-  sortProductsAtom,
-} from "@/utils/jotai/atom";
+import { limitProducts, searchProducts, sortProductsAtom } from "@/utils/jotai/atom";
 import Loaders from "@/components/loaders";
 import { Button } from "@/components/ui/button";
 
@@ -21,11 +17,7 @@ const HomeProductList = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const products = await getProducts(
-        `${
-          searchParams && "/search"
-        }?&limit=${limit}&name=${searchParams}&sort=${sort}`
-      );
+      const products = await getProducts(`${searchParams && "/search"}?&limit=${limit}&name=${searchParams}&sort=${sort}`);
       setData(products.data);
     } catch (error) {
       console.error("Error fetching products:", error);

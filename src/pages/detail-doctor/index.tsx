@@ -84,6 +84,7 @@ const DetailDoctor = () => {
       throw new Error(`${error}`);
     }
   }
+
   return (
     <Layout>
       <Toaster />
@@ -171,7 +172,7 @@ const DetailDoctor = () => {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full bg-blue-500">
+                  <Button onClick={} type="submit" className="w-full bg-blue-500">
                     Continue
                   </Button>
                 </form>
