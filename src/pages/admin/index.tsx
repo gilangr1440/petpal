@@ -1,5 +1,6 @@
 import Layout from "@/components/layout";
 import ProductsAdminCard from "@/components/products-admin-card";
+import { Button } from "@/components/ui/button";
 import { ProductAdmin, getProductsAdmin } from "@/utils/apis/products";
 import { useAuth } from "@/utils/contexts/auth";
 import axios from "axios";
@@ -7,10 +8,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-
 const Admin = () => {
   const [products, setProducts] = useState<ProductAdmin[]>([]);
+  const [limit, setLimit] = useState<number>(10);
   const navigate = useNavigate();
   const { token } = useAuth();
 
@@ -57,9 +57,13 @@ const Admin = () => {
     });
   };
 
+  const LoadmoreHandle = () => {
+    setLimit(limit + 10);
+  };
+
   useEffect(() => {
-    fetchProductsAdmin(1);
-  }, [products?.length]);
+    fetchProductsAdmin(limit);
+  }, [products?.length, limit]);
 
   return (
     <Layout>
@@ -77,24 +81,11 @@ const Admin = () => {
             ))}
         </main>
 
-        {products && (
-          <div className="my-10">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+        {products && products.length >= 10 && (
+          <div className="my-10 w-1/2 mx-auto">
+            <Button className="w-full bg-slate-500 hover:bg-slate-300 rounded-md p-2" onClick={() => LoadmoreHandle()}>
+              Load More
+            </Button>
           </div>
         )}
       </div>
