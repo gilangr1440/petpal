@@ -37,16 +37,17 @@ const History = () => {
               </TableHeader>
               <TableBody>
                 {orderItem.map((item) => {
-                  return (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.product_name}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.payment.payment_method.toUpperCase()}</TableCell>
-                      <TableCell>{item.payment.va_number}</TableCell>
-                      <TableCell>{item.price}</TableCell>
-                      <TableCell>{item.status == "settlement" ? "paid" : item.status}</TableCell>
-                    </TableRow>
-                  );
+                  if (item.status != "created")
+                    return (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.product_name}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell>{item.payment.payment_method.toUpperCase()}</TableCell>
+                        <TableCell>{item.payment.va_number}</TableCell>
+                        <TableCell>{item.price}</TableCell>
+                        <TableCell>{item.status == "settlement" ? "paid" : item.status}</TableCell>
+                      </TableRow>
+                    );
                 })}
               </TableBody>
             </Table>
