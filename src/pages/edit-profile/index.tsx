@@ -43,7 +43,7 @@ const EditProfile = () => {
   const coor = lat != 0 && lng != 0 ? `${lat.toFixed(3)},${lng.toFixed(3)}` : null;
 
   const customIcon = new Icon({
-    iconUrl: "../../../public/assets/placeholder.png",
+    iconUrl: "/assets/placeholder.png",
     iconSize: [38, 38],
   });
 
