@@ -43,7 +43,7 @@ const Admin = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://zyannstore.my.id/products/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+          .delete(`https://zyannstore.my.id/products/${id}`, { headers: { Authorization: `Bearer ${token}` } })
           .then((res) => {
             console.log(res);
             Swal.fire({
